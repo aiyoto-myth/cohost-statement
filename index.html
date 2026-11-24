@@ -1,0 +1,1411 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Co-Host Statement: the monthly owner statement from your Airbnb export</title>
+<meta name="description" content="For Airbnb co-hosts. Drop in Airbnb's earnings CSV, set your fee terms once, and get the month's owner statement: stays split by night, cleaning, expenses, and who owes whom. Runs in your browser, no sign-up.">
+<link rel="canonical" href="https://samsbench.com/cohost-statement/">
+<meta property="og:title" content="Co-Host Statement: owner statements from your Airbnb CSV">
+<meta property="og:description" content="Your fee, the cleaning, the expenses, and one line at the bottom: who owes whom. Free, no sign-up, nothing uploaded.">
+<meta property="og:url" content="https://samsbench.com/cohost-statement/">
+<meta property="og:image" content="https://samsbench.com/cohost-statement/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --desk:#e9ebe4; --panel:#f8f8f3; --paper:#fffdf7; --rule:#e3dfd2; --ink:#18241f; --ink2:#3d4a43; --line:#c9cfc3;
+  --green:#1f4d3f; --green2:#2c6a57; --brass:#b9842f; --brassInk:#2b1d05; --stamp:#b3372a; --ok:#25643f; --warn:#f4e1bd; --focus:#1d4ed8;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--desk);color:var(--ink);font:16.5px/1.5 "IBM Plex Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:Newsreader,Georgia,serif;line-height:1.12;margin:0;font-weight:700}
+h1{font-size:clamp(30px,5vw,50px);letter-spacing:-.01em}
+h2{font-size:clamp(21px,2.6vw,26px)}
+a{color:inherit}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.num,.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:1240px;margin:0 auto;padding:0 16px}
+.top{display:flex;align-items:center;gap:10px;padding:14px 0}
+.top b{font-family:Newsreader,Georgia,serif;font-size:21px}
+.top .sp{flex:1}
+.top a.pro{font-weight:700;text-decoration:none;border:2px solid var(--ink);border-radius:999px;padding:4px 14px}
+.hero{padding:14px 0 18px;display:grid;grid-template-columns:1.2fr 1fr;gap:28px;align-items:end}
+.hero p{font-size:18.5px;margin:12px 0 0;max-width:34em}
+.hero ul{list-style:none;margin:0;padding:0;border-left:4px solid var(--brass)}
+.hero li{padding:5px 0 5px 14px}
+.hero li b{display:block}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+
+.grid{display:grid;grid-template-columns:minmax(0,440px) minmax(0,1fr);gap:22px;align-items:start;padding-bottom:30px}
+.ctl{display:flex;flex-direction:column;gap:14px}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+.box > h2{display:flex;gap:10px;align-items:baseline;margin-bottom:8px}
+.box > h2 .n{color:var(--brass);font-size:26px;min-width:18px}
+.box p{margin:6px 0}
+.lab{display:block;font-weight:600;margin:12px 0 4px}
+.lab small{font-weight:400;color:var(--ink2)}
+.btn{border:2px solid var(--green);background:var(--green);color:#fff;border-radius:9px;padding:8px 14px;font-weight:700}
+.btn.ghost{background:transparent;color:var(--green)}
+.btn.small{padding:4px 10px;font-size:15px;border-radius:8px}
+.btn:disabled{opacity:.5;cursor:default}
+input[type=text],input[type=email],input[type=number],select,textarea{border:2px solid var(--line);background:#fff;border-radius:9px;padding:7px 10px;min-width:0;width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--green)}
+.seg{display:flex;flex-wrap:wrap;border:2px solid var(--green);border-radius:10px;overflow:hidden}
+.seg button{flex:1 1 0;border:0;background:#fff;padding:7px 8px;font-weight:600;font-size:14.5px;line-height:1.25;min-width:0}
+.seg button + button{border-left:2px solid var(--green)}
+.seg button[aria-pressed=true]{background:var(--green);color:#fff}
+.chk{display:flex;gap:8px;align-items:flex-start;margin:8px 0}
+.chk input{width:18px;height:18px;margin-top:3px;flex:none;accent-color:var(--green)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pct{display:flex;align-items:center;gap:6px}
+.pct input{width:90px}
+.drop{border:2px dashed var(--green2);border-radius:12px;padding:16px;text-align:center;background:#fff}
+.drop.over{background:#e4efe9}
+.drop b{display:block;font-size:17px}
+.loaded{background:#e4efe9;border-radius:10px;padding:10px 12px;margin-top:10px}
+.warnbox{background:var(--warn);border-radius:10px;padding:10px 12px;margin-top:10px}
+.err{color:var(--stamp);font-weight:600}
+.ok{color:var(--ok);font-weight:600}
+details summary{cursor:pointer;font-weight:600}
+.exp{display:grid;grid-template-columns:1fr 96px 92px 30px;gap:6px;align-items:center;margin-top:6px}
+.exp button.x{border:0;background:transparent;font-size:18px;color:var(--ink2)}
+.how{font-size:15px}
+.how ol{margin:6px 0 0;padding-left:20px}
+
+/* the statement */
+.out{position:sticky;top:12px}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;align-items:center}
+.acts .sp{flex:1}
+.paper{background:var(--paper);border:1px solid #d9d3c2;box-shadow:0 1px 0 #d9d3c2,0 18px 40px -24px rgba(24,36,31,.45);padding:34px 36px 26px;border-radius:3px;position:relative}
+.paper .demo{position:absolute;top:12px;right:14px;background:var(--brass);color:var(--brassInk);font-weight:700;font-size:13px;border-radius:5px;padding:1px 8px}
+.ph{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;border-bottom:3px double var(--ink);padding-bottom:12px}
+.ph .biz{font-family:Newsreader,Georgia,serif;font-size:24px;font-weight:700;line-height:1.1}
+.ph .logo{max-height:52px;max-width:160px;display:block;margin-bottom:6px}
+.ph .who{margin-top:6px;color:var(--ink2);font-size:14.5px}
+.ph .doc{text-align:right}
+.ph .doc .t{font-family:Newsreader,Georgia,serif;font-size:18px;text-transform:uppercase;letter-spacing:.12em}
+.ph .doc .m{font-family:Newsreader,Georgia,serif;font-size:26px;font-weight:700}
+.sec{margin-top:18px}
+.sec h3{font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:13px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;color:var(--ink)}
+table.st{width:100%;border-collapse:collapse;font-size:14px}
+table.st th{text-align:right;font-weight:600;font-size:12.5px;border-bottom:1.5px solid var(--ink);padding:4px 6px;white-space:nowrap}
+table.st th:first-child,table.st td:first-child{text-align:left;padding-left:0}
+table.st td{text-align:right;padding:6px 6px;border-bottom:1px solid var(--rule);vertical-align:top}
+table.st td:last-child,table.st th:last-child{padding-right:0}
+table.st td .sub{display:block;color:var(--ink2);font-size:12.5px}
+table.st tr.adj td{background:#faf4e6}
+table.st tfoot td{border-top:1.5px solid var(--ink);border-bottom:0;font-weight:600}
+.wf{width:100%;border-collapse:collapse;font-size:15px}
+.wf td{padding:5px 0;border-bottom:1px solid var(--rule)}
+.wf td.v{text-align:right;white-space:nowrap;padding-left:12px}
+.wf td .sub{display:block;color:var(--ink2);font-size:12.5px}
+.wf tr.tot td{border-top:2px solid var(--ink);border-bottom:3px double var(--ink);font-weight:700;font-size:16.5px;padding:8px 0}
+.stub{margin-top:22px;border-top:2px dashed var(--ink2);padding-top:14px;display:flex;justify-content:space-between;align-items:center;gap:16px;position:relative}
+.stub:before{content:"✂";position:absolute;top:-13px;left:-4px;background:var(--paper);padding:0 4px;font-size:16px;color:var(--ink2)}
+.stub .say{font-size:15px;max-width:30em}
+.stub .say b{font-size:17px;display:block;margin-bottom:2px}
+.stub .amt{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:28px;font-weight:600;border:3px solid var(--stamp);color:var(--stamp);border-radius:6px;padding:4px 12px;transform:rotate(-2deg);white-space:nowrap}
+.stub .amt.zero{border-color:var(--ok);color:var(--ok)}
+.pnotes{margin-top:14px;font-size:12.5px;color:var(--ink2)}
+.pnotes p{margin:3px 0}
+.pfoot{margin-top:16px;font-size:12px;color:var(--ink2);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.check{border-left:4px solid var(--brass);background:#fff;border-radius:8px;padding:10px 12px;margin-top:12px;font-size:15px}
+.check.bad{border-left-color:var(--stamp)}
+.empty{padding:40px 10px;text-align:center;color:var(--ink2)}
+.empty b{display:block;font-family:Newsreader,Georgia,serif;font-size:22px;color:var(--ink);margin-bottom:6px}
+
+/* pro + faq */
+.band{background:var(--green);color:#fff;margin-top:10px}
+.band .wrap{padding-top:28px;padding-bottom:28px}
+.band h2{color:#fff}
+.procols{display:grid;grid-template-columns:1.1fr 1fr;gap:26px;align-items:start}
+.band ul{margin:10px 0 0;padding-left:20px}
+.band li{margin:4px 0}
+.buy{background:#fff;color:var(--ink);border-radius:12px;padding:18px;min-width:0}
+.procols > *{min-width:0}
+input[type=file]{max-width:100%}
+.buy .price{font-family:Newsreader,Georgia,serif;font-size:40px;font-weight:700;line-height:1}
+.buy .btn{display:inline-block;text-decoration:none;margin-top:10px;background:var(--brass);border-color:var(--brass);color:var(--brassInk)}
+.unl{display:flex;gap:8px;margin-top:10px}
+.faq{padding:28px 0 10px;max-width:820px}
+.faq h3{font-size:20px;margin-top:20px}
+.faq p{margin:6px 0}
+footer{padding:20px 0 40px;font-size:14.5px;color:var(--ink2)}
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:#fff;border-radius:10px;padding:10px 16px;font-weight:600;display:none;z-index:9;max-width:92vw}
+#printArea{display:none}
+.lo{border:0;background:transparent;color:var(--ink2);font-size:13px;text-decoration:underline;padding:0 0 0 6px;cursor:pointer}
+.inc{display:grid;grid-template-columns:1fr 84px 70px;gap:6px;align-items:center;margin-top:8px;padding-top:8px;border-top:1px solid var(--line)}
+.inc .wide{grid-column:1 / -1}
+.inc small{display:block;font-size:12px;color:var(--ink2)}
+.owned{font-size:13px;color:var(--ink2)}
+#bar{display:none}
+@media (max-width:980px){
+  #bar.on{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:8;background:var(--green);color:#fff;padding:10px 14px;gap:10px;align-items:center;box-shadow:0 -6px 18px rgba(0,0,0,.2)}
+  #bar .t{flex:1;font-size:14.5px;line-height:1.25}
+  #bar .a{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:18px}
+  #bar a{color:#fff;font-weight:700}
+  body.hasbar{padding-bottom:64px}
+}
+
+@media (max-width:980px){
+  .grid{grid-template-columns:1fr}
+  .out{position:static}
+  .hero{grid-template-columns:1fr}
+  .procols{grid-template-columns:1fr}
+}
+@media (max-width:600px){
+  .paper{padding:22px 16px 18px}
+  .ph{flex-direction:column}
+  .ph .doc{text-align:left}
+  table.st thead{display:none}
+  table.st tr{display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid var(--rule);padding:6px 0}
+  table.st td{border:0;padding:1px 0;text-align:left}
+  table.st td:first-child{grid-column:1 / -1;font-weight:600}
+  table.st td .sub{font-weight:400}
+  table.st tr.adj{background:#faf4e6}
+  table.st td[data-k]:before{content:attr(data-k);display:block;font-size:11px;color:var(--ink2);font-family:"IBM Plex Sans",sans-serif}
+  table.st tfoot tr{border-top:1.5px solid var(--ink)}
+  table.st tfoot td{border:0}
+  .stub{flex-direction:column;align-items:flex-start}
+  .exp{grid-template-columns:1fr 84px 30px}
+  .exp select{grid-column:1 / 3}
+}
+@media print{
+  @page{margin:12mm}
+  body{background:#fff}
+  body > *:not(#printArea){display:none !important}
+  #printArea{display:block}
+  .paper{box-shadow:none;border:0;padding:0;page-break-after:always}
+  .paper:last-child{page-break-after:auto}
+  .lo{display:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><b>Co-Host Statement</b><span class="sp"></span><a class="pro" href="#proSec">Pro</a></div>
+  <section class="hero">
+    <div>
+      <h1>The owner statement, straight from your Airbnb export.</h1>
+      <p>For co-hosts who manage other people's listings. Drop in Airbnb's earnings CSV, set your fee terms once, and get the month's statement with one line at the bottom: who owes whom, and how much.</p>
+      <div class="cta"><button class="btn" id="heroLoad">Load my Airbnb CSV</button><button class="btn ghost" id="heroSample">Show me with sample data</button></div>
+    </div>
+    <ul>
+      <li><b>Your terms, not a template's</b>% of gross or after Airbnb's fee, cleaning in or out, a monthly flat fee.</li>
+      <li><b>Stays across two months split by night</b>Or by check-in, or by Airbnb's date if you work on cash.</li>
+      <li><b>Checks Airbnb's split payout</b>On a split payout it compares what Airbnb sent you with what your agreement says.</li>
+      <li><b>Nothing leaves your computer</b>The CSV is read in this page. No account, no upload.</li>
+    </ul>
+  </section>
+</div>
+
+<div class="wrap grid">
+  <div class="ctl">
+    <section class="box" id="s1">
+      <h2><span class="n">1</span>Airbnb's earnings export</h2>
+      <div class="drop" id="drop">
+        <b>Drop the CSV here</b>
+        <span>or</span> <button class="btn small" id="pick">choose the file</button>
+        <input type="file" id="file" accept=".csv,text/csv,text/plain" hidden>
+      </div>
+      <details class="how" style="margin-top:10px"><summary>Where do I get it?</summary>
+        <ol>
+          <li>On airbnb.com, open <b>Menu &gt; Earnings</b> in the <b>owner's</b> account (or the listing's earnings, if you're a co-host with full access). Your own co-host earnings page only has your payouts, not the stays.</li>
+          <li>Choose <b>Paid</b> (or <b>Transaction history</b>). Set the dates to cover the month <b>and the month before</b>, so stays that started then are complete.</li>
+          <li>Pick the listings, then <b>Export CSV</b>. Drop that file above. One file can hold several owners: you tick each owner's listings in step 2.</li>
+        </ol>
+      </details>
+      <details style="margin-top:8px"><summary>Paste it instead</summary>
+        <textarea id="paste" rows="4" placeholder="Paste the CSV text here" style="margin-top:6px"></textarea>
+        <button class="btn small" id="pasteGo" style="margin-top:6px">Read it</button>
+      </details>
+      <div id="loadMsg"></div>
+    </section>
+
+    <section class="box" id="s2">
+      <h2><span class="n">2</span>The owner and your terms</h2>
+      <div class="row" style="display:flex;gap:8px;align-items:center">
+        <select id="prof" aria-label="Owner"></select>
+        <button class="btn small ghost" id="profNew" style="white-space:nowrap">+ Owner</button>
+        <button class="btn small ghost" id="profDel" aria-label="Remove this owner" title="Remove this owner">Remove</button>
+      </div>
+      <label class="lab" for="owner">Owner's name</label>
+      <input type="text" id="owner" placeholder="e.g. Dana Whitfield" maxlength="80">
+      <label class="lab" for="biz">Your business name <small>(top of the statement)</small></label>
+      <input type="text" id="biz" placeholder="e.g. Pinecrest Hosting" maxlength="80">
+      <div id="lstWrap"><span class="lab">This owner's listings</span><div id="lst"></div></div>
+
+      <span class="lab">Your fee</span>
+      <div class="pct"><input type="number" id="pct" min="0" max="100" step="0.5" inputmode="decimal" aria-label="Fee percent"> <b>%</b> <span>of</span></div>
+      <div class="seg" id="base" style="margin-top:6px">
+        <button data-v="gross" aria-pressed="false">Gross earnings<br><small>before Airbnb's fee</small></button>
+        <button data-v="net" aria-pressed="false">After Airbnb's<br><small>host fee</small></button>
+      </div>
+      <label class="chk"><input type="checkbox" id="cleanIn"><span>Take the % on the cleaning fee too</span></label>
+      <span class="lab">The guest's cleaning fee goes to</span>
+      <div class="seg" id="cleanTo">
+        <button data-v="cohost" aria-pressed="false">Me<br><small>I pay the cleaners</small></button>
+        <button data-v="owner" aria-pressed="false">The owner<br><small>owner pays cleaning</small></button>
+      </div>
+      <span class="lab">Airbnb pays the money to</span>
+      <div class="seg" id="flow">
+        <button data-v="split" aria-pressed="false">Split payout<br><small>my share to me</small></button>
+        <button data-v="owner" aria-pressed="false">The owner<br><small>I invoice</small></button>
+        <button data-v="cohost" aria-pressed="false">Me<br><small>I pay the owner</small></button>
+      </div>
+      <details style="margin-top:10px"><summary>More terms</summary>
+        <label class="lab" for="flat">Fixed monthly fee <small>(optional)</small></label>
+        <input type="text" id="flat" inputmode="decimal" placeholder="0.00">
+        <span class="lab">A stay that runs into the next month</span>
+        <div id="periodNote" style="font-size:14px;margin-bottom:4px"></div>
+        <div class="seg" id="period">
+          <button data-v="nights" aria-pressed="false">Split by night</button>
+          <button data-v="checkin" aria-pressed="false">Check-in month</button>
+          <button data-v="paid" aria-pressed="false">Airbnb's date</button>
+        </div>
+        <label class="chk"><input type="checkbox" id="resFee"><span>Take the % on damage reimbursements too</span></label>
+      </details>
+    </section>
+
+    <section class="box" id="s3">
+      <h2><span class="n">3</span>The month</h2>
+      <select id="month" aria-label="Month"></select>
+      <div id="splitWrap">
+        <label class="lab" for="paidIn">Airbnb paid you this month <small>(your co-host share)</small></label>
+        <input type="text" id="paidIn" inputmode="decimal">
+        <div id="paidHint" style="font-size:14px;margin-top:4px"></div>
+      </div>
+      <span class="lab">Expenses this month</span>
+      <div id="exps"></div>
+      <button class="btn small ghost" id="expAdd" style="margin-top:8px">+ Expense</button>
+      <span class="lab">Vrbo, Booking.com or direct bookings <small>(Pro)</small></span>
+      <div id="incs"></div>
+      <button class="btn small ghost" id="incAdd" style="margin-top:8px">+ Other booking</button>
+      <div id="exclWrap"></div>
+    </section>
+
+    <section class="box how">
+      <b>Your settings live in this browser.</b> Owners, terms and expenses are saved here only. Keep a copy, or move them to another computer:
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="btn small ghost" id="bkOut">Download settings</button><button class="btn small ghost" id="bkIn">Load settings</button><input type="file" id="bkFile" accept=".json,application/json" hidden></div>
+    </section>
+  </div>
+
+  <div class="out">
+    <div class="acts">
+      <button class="btn" id="print">Print / save PDF</button>
+      <button class="btn ghost" id="copy">Copy as email</button>
+      <span class="sp"></span>
+      <button class="btn small ghost" id="csvOut">Download CSV</button>
+      <button class="btn small ghost" id="ytdBtn">Year to date</button>
+      <button class="btn small ghost" id="allBtn">Print all owners</button>
+    </div>
+    <div id="paperWrap"></div>
+    <div id="checkWrap"></div>
+  </div>
+</div>
+
+<section class="band" id="proSec">
+  <div class="wrap procols">
+    <div>
+      <h2>Pro is for co-hosts with more than one owner</h2>
+      <ul>
+        <li>Unlimited owners, each with their own terms, saved in this browser</li>
+        <li>Vrbo, Booking.com and direct bookings on the same statement</li>
+        <li>Print every owner's statement for the month in one go</li>
+        <li>Year-to-date statement per owner (handy at tax time)</li>
+        <li>Download the statement lines as CSV for your books</li>
+        <li>Your logo on top, and no "made with" line at the bottom</li>
+      </ul>
+      <p style="margin-top:12px">The free version does one owner's Airbnb listings, every month, with nothing held back on the numbers.</p>
+    </div>
+    <div class="buy">
+      <div class="price" id="proPrice"></div>
+      <div>one payment, yours to keep</div>
+      <a class="btn" id="buyLink" href="#" rel="noopener">Get Pro</a>
+      <div id="proState"></div>
+      <div id="proBuy">
+        <label class="lab" for="proKey">Already bought, or got a code?</label>
+        <div class="unl"><input type="text" id="proKey" placeholder="Email you paid with, or gift code" autocomplete="email"><button class="btn" id="proGo">Unlock</button></div>
+        <div id="proMsg" style="margin-top:6px"></div>
+      </div>
+      <div id="logoWrap" hidden>
+        <label class="lab" for="logo">Your logo <small>(PNG or JPG, shown on top)</small></label>
+        <input type="file" id="logo" accept="image/png,image/jpeg,image/webp">
+        <button class="btn small ghost" id="logoX" style="margin-top:6px">Remove logo</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap faq">
+  <h2>How the numbers work</h2>
+  <h3>What is "Gross earnings" and what is "after Airbnb's fee"?</h3>
+  <p>In Airbnb's export, Gross earnings is what the stay earned for the host before Airbnb's host service fee: the nightly rate, the cleaning fee and any other fees you charge. After the fee is Gross earnings minus the service fee, which is what Airbnb actually pays out. Co-host agreements use both, so pick the one in yours. If your % is not charged on cleaning, leave "Take the % on the cleaning fee too" off.</p>
+  <h3>How does a stay across two months get split?</h3>
+  <p>With "Split by night", a stay from the 29th to the 2nd with 4 nights puts 3 nights in the first month and 1 in the next. The nightly money and Airbnb's fee are split in that proportion; the cleaning fee is one job, so it stays whole in the check-in month. The two months always add up to the stay, to the cent. Refunds and adjustments land in the month Airbnb dated them, as their own line. Long stays that Airbnb pays monthly are counted by payment date.</p>
+  <h3>I'm on Airbnb's split payout. Why is there still a balance?</h3>
+  <p>Airbnb sends your share straight to you, so the statement takes off what Airbnb already paid you. What is left is what your agreement adds on top: expenses you paid, a monthly fee, or a share Airbnb's split doesn't cover. On a split payout the statement follows Airbnb's payout dates, so a stay across two months doesn't make the balance swing back and forth. The box under the statement compares what Airbnb paid you with your terms, so you can catch a wrong split setting.</p>
+  <h3>Is my data uploaded anywhere?</h3>
+  <p>No. The CSV is read inside this page and saved only in this browser. Unlocking Pro checks the email you paid with; nothing else is sent. The page counts visits anonymously.</p>
+</div>
+<footer class="wrap">Co-Host Statement · a small tool from <a href="https://samsbench.com/">samsbench.com</a> · not affiliated with Airbnb. Questions or refunds: sam at samsbench dot com.</footer>
+
+<div id="bar" aria-live="polite"><span class="t" id="barT"></span><span class="a" id="barA"></span><a href="#paperWrap">See it</a></div>
+<div id="printArea"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/*CORE-START*/
+var CS = (function(){
+  'use strict';
+
+  /* ---------- CSV text -> array of rows (RFC 4180: quotes, doubled quotes, CRLF, newlines inside quotes) ---------- */
+  function splitCSV(text){
+    text = String(text || '').replace(/^﻿/, '');
+    var delim = ',';
+    var first = text.split(/\r?\n/, 1)[0] || '';
+    if((first.match(/;/g) || []).length > (first.match(/,/g) || []).length) delim = ';';   // European Excel re-saves
+    else if((first.match(/\t/g) || []).length > (first.match(/,/g) || []).length) delim = '\t';
+    var rows = [], row = [], f = '', q = false, i = 0, c;
+    for(; i < text.length; i++){
+      c = text.charAt(i);
+      if(q){
+        if(c === '"'){ if(text.charAt(i + 1) === '"'){ f += '"'; i++; } else q = false; }
+        else f += c;
+      } else if(c === '"' && f === '') q = true;
+      else if(c === delim){ row.push(f); f = ''; }
+      else if(c === '\n' || c === '\r'){
+        if(c === '\r' && text.charAt(i + 1) === '\n') i++;
+        row.push(f); f = ''; rows.push(row); row = [];
+      } else f += c;
+    }
+    if(f !== '' || row.length){ row.push(f); rows.push(row); }
+    return rows.filter(function(r){ return r.some(function(x){ return String(x).trim() !== ''; }); });
+  }
+
+  /* ---------- column names ---------- */
+  var COLS = {
+    date:    ['date', 'payout date', 'transaction date'],
+    type:    ['type', 'transaction type'],
+    code:    ['confirmation code', 'confirmation', 'reservation code'],
+    start:   ['start date', 'check-in', 'check-in date', 'checkin', 'arrival'],
+    end:     ['end date', 'check-out', 'check-out date', 'checkout', 'departure'],
+    nights:  ['nights'],
+    guest:   ['guest', 'guest name'],
+    listing: ['listing', 'listing name', 'property'],
+    details: ['details', 'description'],
+    currency:['currency'],
+    amount:  ['amount', 'net amount'],
+    paid:    ['paid out'],
+    fee:     ['service fee', 'host fee', 'host service fee'],
+    clean:   ['cleaning fee'],
+    gross:   ['gross earnings'],
+    fastpay: ['fast pay fee', 'fast pay fees'],
+    taxRemit:['occupancy taxes', 'occupancy tax'],                                    // collected and remitted by Airbnb: not the host's money
+    taxPass: ['pass through tot', 'pass-through tot', 'pass through tax', 'pass through taxes'],   // paid to the host, who must remit it
+    taxHeld: ['taxes withheld', 'tax withheld', 'withholding tax', 'us taxes withheld', 'withheld taxes']   // income tax Airbnb held back
+  };
+  function norm(h){ return String(h || '').replace(/^﻿/, '').trim().toLowerCase().replace(/\s+/g, ' '); }
+  function mapHeader(hdr){
+    var m = {}, n = hdr.map(norm);
+    Object.keys(COLS).forEach(function(k){
+      for(var a = 0; a < COLS[k].length; a++){ var i = n.indexOf(COLS[k][a]); if(i >= 0){ m[k] = i; return; } }
+    });
+    return m;
+  }
+
+  /* ---------- money and dates ---------- */
+  /* "$1,234.56" "-12.00" "(12.00)" "1.234,56" "€ 89,50" -> cents (integer), '' -> null */
+  function cents(s){
+    s = String(s == null ? '' : s).trim().replace(/[\u2212\u2012\u2013\u2014]/g, '-');
+    if(s === '') return null;
+    var neg = /^\(.*\)$/.test(s) || /^-|^[^\d]*-/.test(s) || /-$/.test(s);
+    s = s.replace(/[^\d.,]/g, '');
+    if(s === '') return null;
+    if(/^\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g, '');                                   // 1.234 = one thousand (European)
+    else if(/^\d{1,3}(\.\d{3})*,\d{1,2}$/.test(s) || /^\d+,\d{1,2}$/.test(s)) s = s.replace(/\./g, '').replace(',', '.');   // 1.234,56 / 89,50
+    else s = s.replace(/,/g, '');
+    var v = parseFloat(s);
+    if(isNaN(v)) return null;
+    return Math.round(v * 100) * (neg ? -1 : 1);
+  }
+  /* Dates come as MM/DD/YYYY (US accounts), DD/MM/YYYY (many others) or YYYY-MM-DD. A day number is an integer
+     (days since 1970-01-01, UTC) so night counting never meets daylight-saving. order: 'mdy' | 'dmy' | 'ymd'. */
+  function dayNum(y, m, d){
+    if(!(y > 1900 && m >= 1 && m <= 12 && d >= 1 && d <= 31)) return null;
+    var t = Date.UTC(y, m - 1, d), dt = new Date(t);
+    if(dt.getUTCMonth() !== m - 1) return null;             // 02/31
+    return Math.round(t / 86400000);
+  }
+  function parts(s){
+    s = String(s || '').trim();
+    var x = /^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})/.exec(s); if(x) return {iso: [+x[1], +x[2], +x[3]]};
+    x = /^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4})/.exec(s); if(!x) return null;
+    var y = +x[3]; if(y < 100) y += 2000;
+    return {a: +x[1], b: +x[2], y: y};
+  }
+  function parseDate(s, order){
+    var p = parts(s); if(!p) return null;
+    if(p.iso) return dayNum(p.iso[0], p.iso[1], p.iso[2]);
+    return order === 'dmy' ? dayNum(p.y, p.b, p.a) : dayNum(p.y, p.a, p.b);
+  }
+  function ymd(n){ var d = new Date(n * 86400000); return [d.getUTCFullYear(), d.getUTCMonth() + 1, d.getUTCDate()]; }
+  function monthKey(n){ var a = ymd(n); return a[0] + '-' + (a[1] < 10 ? '0' : '') + a[1]; }
+  function monthBounds(key){ var y = +key.slice(0, 4), m = +key.slice(5, 7); return [dayNum(y, m, 1), m === 12 ? dayNum(y + 1, 1, 1) : dayNum(y, m + 1, 1)]; }
+
+  /* Which date order? A first number above 12 settles it; otherwise trust whichever order makes end - start = Nights
+     on more rows; tie -> US order (Airbnb's default export). */
+  function guessOrder(recs, M){
+    var votes = {mdy: 0, dmy: 0}, hard = null;
+    recs.forEach(function(r){
+      ['date', 'start', 'end'].forEach(function(k){
+        if(M[k] === undefined) return;
+        var p = parts(r[M[k]]); if(!p || p.iso) return;
+        if(p.a > 12 && p.b <= 12) hard = hard || 'dmy';
+        if(p.b > 12 && p.a <= 12) hard = hard || 'mdy';
+      });
+      if(M.start !== undefined && M.end !== undefined && M.nights !== undefined){
+        var n = parseInt(r[M.nights], 10); if(!(n > 0)) return;
+        ['mdy', 'dmy'].forEach(function(o){
+          var s = parseDate(r[M.start], o), e = parseDate(r[M.end], o);
+          if(s !== null && e !== null && e - s === n) votes[o]++;
+        });
+      }
+    });
+    if(hard) return hard;
+    return votes.dmy > votes.mdy ? 'dmy' : 'mdy';
+  }
+
+  /* ---------- row kinds ---------- */
+  function kindOf(t){
+    t = norm(t);
+    if(/co-?host/.test(t)) return 'cohost';                         // "Co-Host payout": money Airbnb sent the co-host directly
+    if(t === 'payout' || /^payout\b/.test(t) && !/resolution/.test(t)) return 'payout';   // bank transfer, not income
+    if(/resolution/.test(t)) return 'resolution';                   // damage reimbursement (+) or Resolution Center deduction (-)
+    if(/pass.?through|\btot\b|tax/.test(t)) return 'tax';           // tax paid through to the host to remit
+    if(/cancellation fee|penalty/.test(t)) return 'cancelfee';      // host cancellation penalty
+    if(/adjust|refund|cancel/.test(t)) return 'adjust';
+    if(/reserv|booking|stay|home/.test(t) || t === '') return 'stay';
+    return 'other';
+  }
+
+  /* ---------- parse an Airbnb export ----------
+     Returns {ok, rows, listings, months, order, currencies, warnings, skipped, error}. Each money row:
+     {kind, code, guest, listing, details, cur, date, start, end, nights, gross, fee, fp, clean, net, taxRemit, taxPass, taxHeld, flag,
+      cancelled, installment}
+     gross = Gross earnings (nights + cleaning + other host fees, before Airbnb's host fee); fee = Airbnb host fee (positive on a stay);
+     fp = Fast Pay fee; net = gross - fee - fp. Without a Gross earnings column, gross = Amount + fees. Co-host rows: {kind:'cohost', amount>0}. */
+  function parse(text, forceOrder){
+    var all = splitCSV(text), warnings = [];
+    if(!all.length) return {ok: false, error: 'The file is empty.'};
+    var hi = -1, M = null;
+    for(var i = 0; i < Math.min(all.length, 15); i++){
+      var mm = mapHeader(all[i]);
+      if(mm.type !== undefined && (mm.amount !== undefined || mm.gross !== undefined)){ hi = i; M = mm; break; }
+    }
+    if(hi < 0) return {ok: false, error: 'This doesn\'t look like an Airbnb earnings export: no "Type" and "Amount" columns. In Airbnb: Menu > Earnings > Transaction history (or Paid) > Export CSV.'};
+    var recs = all.slice(hi + 1).filter(function(r){ return r.length > 1; });
+    var order = forceOrder === 'mdy' || forceOrder === 'dmy' ? forceOrder : guessOrder(recs, M), rows = [], skipped = {payout: 0, blank: 0};
+    function g(r, k){ return M[k] === undefined ? '' : String(r[M[k]] == null ? '' : r[M[k]]).trim(); }
+    recs.forEach(function(r, ix){
+      var kind = kindOf(g(r, 'type'));
+      var row = {line: hi + ix + 2, kind: kind, type: g(r, 'type'), code: g(r, 'code'), guest: g(r, 'guest'), listing: g(r, 'listing'),
+                 details: g(r, 'details'), cur: (g(r, 'currency') || '').toUpperCase().replace(/[^A-Z]/g, '').slice(0, 4), date: parseDate(g(r, 'date'), order),
+                 start: parseDate(g(r, 'start'), order), end: parseDate(g(r, 'end'), order), nights: parseInt(g(r, 'nights'), 10) || 0,
+                 flag: '', cancelled: false, installment: false};
+      var amt = cents(g(r, 'amount')), paid = cents(g(r, 'paid')), fee = cents(g(r, 'fee')), clean = cents(g(r, 'clean')),
+          gross = cents(g(r, 'gross')), fp = cents(g(r, 'fastpay')), tR = cents(g(r, 'taxRemit')), tP = cents(g(r, 'taxPass')), tH = cents(g(r, 'taxHeld'));
+      row.raw = amt !== null ? amt : (gross !== null ? gross : paid);
+      if(kind === 'payout'){ skipped.payout++; return; }
+      if(kind === 'cohost'){
+        var v = amt !== null ? amt : (paid !== null ? paid : 0);
+        // The owner's export may show it as money leaving the owner (negative), the co-host's as money arriving: either way it went to the co-host.
+        row.amount = v;   // sign normalised below, once the file's convention is known
+        if(row.date === null){ skipped.blank++; return; }
+        rows.push(row); return;
+      }
+      if(amt === null && gross === null){ skipped.blank++; return; }
+      fee = fee || 0; clean = clean || 0; fp = Math.abs(fp || 0); tR = tR || 0; tP = tP || 0; tH = Math.abs(tH || 0);
+      if(kind === 'tax' || kind === 'cancelfee' || kind === 'other'){
+        // money rows with no stay economics: keep the amount as-is
+        row.gross = gross !== null ? gross : amt; row.fee = 0; row.fp = 0; row.clean = 0; row.net = amt !== null ? amt : gross;
+        row.taxRemit = 0; row.taxPass = 0; row.taxHeld = 0;
+        if(row.date === null){ skipped.blank++; return; }
+        rows.push(row); return;
+      }
+      if(gross === null){ gross = amt + (Math.abs(fee) + fp - tP + tH) * (amt < 0 ? -1 : 1); }
+      // Airbnb writes the host fee as a positive number on a stay. Make fee carry the sign that makes the row add up.
+      if(amt !== null){
+        var ok = function(f){ return Math.abs(gross - f - (amt < 0 ? -fp : fp) + tP - tH - amt) <= 2; };
+        if(ok(fee)) {}
+        else if(ok(-fee)) fee = -fee;
+        else if(Math.abs(gross - fee - amt) <= 2) { fp = 0; tP = 0; tH = 0; }          // fee columns that are informational only
+        else if(tR && Math.abs(gross - fee - fp + tR - amt) <= 2) { tP = tR; tR = 0; }   // "Occupancy taxes" paid out to the host: theirs to remit
+        else row.flag = 'Airbnb\'s Amount (' + fmt(amt) + ') doesn\'t match Gross earnings less fees (' + fmt(gross - fee - fp + tP - tH) + ').';
+        if(amt < 0) fp = -fp;
+      }
+      if(row.start !== null && row.end !== null){
+        var n = row.end - row.start;
+        if(!row.nights) row.nights = n;
+        else if(n !== row.nights && !row.flag) row.flag = 'Dates give ' + n + ' nights but the file says ' + row.nights + '.';
+      }
+      if(kind === 'stay' && /cancel/i.test(row.details)) row.cancelled = true;
+      row.gross = gross; row.fee = fee; row.fp = fp; row.clean = clean; row.net = gross - fee - fp;
+      row.taxRemit = tR; row.taxPass = tP; row.taxHeld = tH;
+      if(row.date === null && row.start === null){ skipped.blank++; return; }
+      if(row.date === null) row.date = row.start;
+      rows.push(row);
+    });
+    // Stays of 28+ nights are paid monthly by Airbnb: each payment is counted on its own date, never spread over the stay.
+    var byCode = {};
+    rows.forEach(function(r){ if(r.kind === 'stay' && r.code) (byCode[r.code] = byCode[r.code] || []).push(r); });
+    rows.forEach(function(r){
+      if(r.kind === 'stay' && r.nights >= 28){ var a = byCode[r.code] || [r]; r.installment = true; r.part = a.indexOf(r) + 1; r.parts = a.length; }
+    });
+    // Co-host rows: most of them show the share going out (owner's file, negative) or coming in (co-host's file, positive).
+    // Flip so the usual direction is positive; a row the other way is Airbnb taking a share back after a refund.
+    var co = rows.filter(function(r){ return r.kind === 'cohost' && r.amount; });
+    var negs = co.filter(function(r){ return r.amount < 0; }).length, dir = negs * 2 > co.length ? -1 : 1;
+    co.forEach(function(r){ r.amount = r.amount * dir; });
+    // Each co-host row belongs with the nearest-dated money line of the same booking (the share is often dated a day later).
+    rows.forEach(function(r){
+      if(r.kind !== 'cohost' || !r.code) return;
+      var best = null;
+      rows.forEach(function(x){ if(x.kind !== 'cohost' && x.code === r.code && x.date !== null && (best === null || Math.abs(x.date - r.date) < Math.abs(best - r.date))) best = x.date; });
+      r.matchDate = best;
+    });
+    // Co-host rows without a listing: take it from the stay with the same confirmation code.
+    var listingOf = {};
+    rows.forEach(function(r){ if(r.kind !== 'cohost' && r.code && r.listing) listingOf[r.code] = r.listing; });
+    rows.forEach(function(r){ if(!r.listing && r.code && listingOf[r.code]) r.listing = listingOf[r.code]; });
+    var money = rows.filter(function(r){ return r.kind !== 'cohost'; });
+    if(skipped.blank) warnings.push(skipped.blank + ' line' + (skipped.blank === 1 ? '' : 's') + ' had no amount or a date this page couldn\'t read, and ' + (skipped.blank === 1 ? 'is' : 'are') + ' left out.');
+    if(!rows.length) return {ok: false, error: 'Found the columns but no bookings in this file. Export "Transaction history" with a date range that has stays.'};
+    if(!money.length) return {ok: false, onlyCohost: true, error: 'This file only has your co-host payouts, not the stays, so it looks like an export from your own co-host account. Export from the owner\'s Earnings page instead (or from the listing, if you have full access), so the statement can show the bookings.'};
+    if(M.gross === undefined) warnings.push('No "Gross earnings" column, so gross is worked out as Amount + fees.');
+    var listings = {}, months = {}, curs = {};
+    rows.forEach(function(r){
+      if(r.listing) listings[r.listing] = 1;
+      if(r.cur) curs[r.cur] = 1;
+      if(r.date !== null) months[monthKey(r.date)] = 1;
+      if(r.kind === 'stay' && r.start !== null){
+        months[monthKey(r.start)] = 1;
+        if(r.end !== null && r.end > r.start){ for(var d = r.start; d < r.end; d += 27) months[monthKey(d)] = 1; months[monthKey(r.end - 1)] = 1; }
+      }
+    });
+    var cl = Object.keys(curs);
+    return {ok: true, rows: rows, listings: Object.keys(listings).sort(), months: Object.keys(months).sort(), order: order,
+            currency: cl.length === 1 ? cl[0] : (cl.length ? 'mixed' : ''), currencies: cl, warnings: warnings, skipped: skipped, hasGross: M.gross !== undefined,
+            unlisted: rows.filter(function(r){ return !r.listing; }).length};
+  }
+  function rowKey(r){ return [r.code, r.type, r.date, r.raw, r.listing].join('|'); }   // same line in a later export keeps its key: used to leave a line off
+
+  /* ---------- the statement ----------
+     terms = {
+       pct: 20,                      // your fee, percent
+       base: 'gross' | 'net',        // fee charged on Gross earnings (before Airbnb's host fee) or after it
+       cleanInBase: false,           // is the cleaning fee part of what your % is charged on?
+       cleanTo: 'cohost' | 'owner',  // who keeps the guest-paid cleaning fee (you pay the cleaner, or the owner does)
+       flow: 'split' | 'owner' | 'cohost',   // who Airbnb pays: split payout (each gets a share) / all to owner / all to you
+       flat: 0,                      // fixed monthly fee, cents
+       period: 'nights' | 'checkin' | 'paid',  // which month a stay belongs to. A split payout always uses 'paid' (see below).
+       resFee: false,                // take your % of damage reimbursements too
+       listings: [...]               // this owner's listings. Empty = none (never "all").
+     }
+     extras = {expenses: [{what, cents, by:'cohost'|'owner'}], income: [{what, cents, fee, clean, by:'owner'|'cohost'}],
+               exclude: {rowKey: 1}, cohostPaid: cents|null}
+     Settling up, one rule for every money flow:
+       owed to co-host = fee + cleaning kept + monthly fee + expenses the co-host paid
+       cash already with the co-host = (split) Airbnb's co-host payouts / (all to co-host) everything Airbnb paid / (all to owner) nothing,
+                                      plus other-platform income paid to the co-host
+       due = owed - cash with co-host.  due > 0: owner pays co-host; due < 0: co-host pays owner. */
+  function round(x){ return Math.round(x); }
+  function inMonth(d, b){ return d !== null && d >= b[0] && d < b[1]; }
+  function overlap(s, e, b){ return Math.max(0, Math.min(e, b[1]) - Math.max(s, b[0])); }
+  function statement(parsed, month, terms, extras){
+    terms = terms || {}; extras = extras || {};
+    var b = monthBounds(month), pct = +terms.pct || 0, want = terms.listings || [], flow = terms.flow || 'owner';
+    var period = flow === 'split' ? 'paid' : (terms.period || 'nights');   // Airbnb pays the split once per stay; matching it needs Airbnb's dates
+    var ex = extras.exclude || {};
+    var lines = [], res = [], pen = [], coAll = [], screen = [], notes = [], excluded = [], uncounted = [], taxRows = [], nightsByCode = {}, curs = {}, fileCurs = {};
+    function baseOf(g, f, fp, c){ return (terms.base === 'gross' ? g : g - f - fp) - (terms.cleanInBase ? 0 : c); }
+    parsed.rows.forEach(function(r){
+      if(want.indexOf(r.listing) < 0) return;
+      if(r.cur) fileCurs[r.cur] = 1;
+      if(r.kind === 'cohost'){ coAll.push(r); return; }
+      var N = (r.end !== null && r.start !== null && r.end > r.start) ? r.end - r.start : 0;
+      var byDate = r.kind !== 'stay' || period === 'paid' || r.cancelled || r.installment || r.start === null;
+      var share = byDate ? (inMonth(r.date, b) ? 1 : 0) : (period === 'checkin' || !N) ? (inMonth(r.start, b) ? 1 : 0) : (overlap(r.start, r.end, b) ? 1 : 0);
+      var stayed = r.kind === 'stay' && !r.cancelled && N ? overlap(r.start, r.end, b) : 0;
+      // long stays paid monthly: nights stayed count even in a month with no payment line
+      if(r.installment && stayed && !ex[rowKey(r)]) nightsByCode[r.code] = stayed;
+      if(!share) return;
+      if(ex[rowKey(r)]){ excluded.push(r); return; }
+      if(r.cur) curs[r.cur] = 1;
+      if(r.kind === 'tax'){ taxRows.push({row: r, amount: r.net}); return; }
+      if(r.kind === 'other'){ uncounted.push(r); return; }
+      if(r.kind === 'cancelfee'){ pen.push({row: r, key: rowKey(r), net: r.net}); return; }
+      if(r.flag) screen.push((r.code || 'Line ' + r.line) + ': ' + r.flag + ' Check this line in Airbnb, or leave it off.');
+      // Split by night with exact cents: each month gets cum(end of month) - cum(start of month), so the months always add up to the stay.
+      var byNight = !byDate && period === 'nights' && N > 0, gx = r.gross - r.clean, tb = 0, te = 0;
+      if(byNight){ tb = Math.max(0, Math.min(N, b[0] - r.start)); te = Math.max(0, Math.min(N, b[1] - r.start)); }
+      function G(t){ return round(gx * t / N) + (t > 0 ? r.clean : 0); }
+      function F(x, t){ return r.gross ? round(x * G(t) / r.gross) : round(x * t / N); }
+      function part(x){ return byNight ? F(x, te) - F(x, tb) : x; }
+      var g = byNight ? G(te) - G(tb) : r.gross, c = byNight ? (te > 0 ? r.clean : 0) - (tb > 0 ? r.clean : 0) : r.clean;
+      var f = part(r.fee), fp = part(r.fp), whole = !byNight || (tb === 0 && te === N);
+      var nightsIn = r.kind !== 'stay' || r.cancelled ? 0 : byNight ? te - tb : r.installment ? 0 : r.nights;
+      if(r.kind === 'stay' && !r.cancelled && !r.installment) nightsByCode[r.code || rowKey(r)] = (nightsByCode[r.code || rowKey(r)] || 0) + nightsIn;
+      var L = {row: r, key: rowKey(r), kind: r.kind, code: r.code, guest: r.guest, listing: r.listing, start: r.start, end: r.end, cur: r.cur,
+               nights: r.nights, nightsIn: nightsIn, partial: byNight && !whole && r.kind === 'stay', whole: {gross: r.gross, nights: N},
+               gross: g, clean: c, fee: f, fp: fp, net: g - f - fp, taxRemit: part(r.taxRemit), taxPass: part(r.taxPass), taxHeld: part(r.taxHeld)};
+      L.base = r.kind === 'resolution' ? (terms.resFee && L.net > 0 ? L.net : 0) : baseOf(g, f, fp, c);
+      (r.kind === 'resolution' ? res : lines).push(L);
+    });
+    (extras.income || []).forEach(function(m, i){
+      if(!m || !(+m.cents)) return;
+      var g = Math.max(0, +m.cents || 0), f = Math.max(0, +m.fee || 0), c = Math.min(Math.max(0, +m.clean || 0), g), n = Math.max(0, Math.min(31, parseInt(m.nights, 10) || 0));
+      var L = {manual: true, idx: i, kind: 'manual', what: String(m.what || 'Other booking').slice(0, 80), by: m.by === 'cohost' ? 'cohost' : 'owner', guest: String(m.what || 'Other booking').slice(0, 80), listing: '',
+               start: null, end: null, nights: n, nightsIn: n, gross: g, clean: c, fee: f, fp: 0, net: g - f, taxRemit: 0, taxPass: 0, taxHeld: 0, row: {date: b[0], details: ''}};
+      L.base = baseOf(g, f, 0, c);
+      lines.push(L);
+    });
+    lines.sort(function(a, c){ return (a.manual ? 1 : 0) - (c.manual ? 1 : 0) || (a.start === null ? a.row.date : a.start) - (c.start === null ? c.row.date : c.start); });
+    // Fee per line from a running total, so the lines add up exactly to the fee on the total base (no stray cent).
+    var cum = 0, prev = 0;
+    lines.concat(res).forEach(function(L){ cum += L.base * pct / 100; var r2 = round(cum); L.commission = r2 - prev; prev = r2; });
+    function sum(arr, k){ return arr.reduce(function(s, x){ return s + (x[k] || 0); }, 0); }
+    var air = lines.filter(function(l){ return !l.manual; }), man = lines.filter(function(l){ return l.manual; });
+    // Co-host payouts for this statement. Split payout: matched to the bookings on it by confirmation code (Airbnb may date
+    // the share a day apart); a share whose booking isn't in the file goes by its own date.
+    var cohostRows = coAll.filter(function(r){
+      if(ex[rowKey(r)]) return false;
+      return inMonth(period === 'paid' && r.matchDate != null ? r.matchDate : r.date, b);
+    });
+    var T = {
+      gross: sum(lines, 'gross'), clean: sum(lines, 'clean'), fee: sum(lines, 'fee'), fp: sum(lines, 'fp'), net: sum(lines, 'net'),
+      grossAirbnb: sum(air, 'gross'), feeAirbnb: sum(air, 'fee') + sum(air, 'fp'), grossOther: sum(man, 'gross'), feeOther: sum(man, 'fee'),
+      taxRemit: sum(lines, 'taxRemit') + sum(res, 'taxRemit'), taxHeld: sum(lines, 'taxHeld') + sum(res, 'taxHeld'),
+      taxPass: sum(lines, 'taxPass') + sum(res, 'taxPass') + taxRows.reduce(function(s, t){ return s + t.amount; }, 0),
+      base: sum(lines, 'base') + sum(res, 'base'), commission: sum(lines, 'commission') + sum(res, 'commission'),
+      commissionLines: sum(lines, 'commission'), commissionReimb: sum(res, 'commission'), commissionAirbnb: sum(air, 'commission'),
+      reimb: sum(res, 'net'), penalty: sum(pen, 'net'),
+      nights: Object.keys(nightsByCode).reduce(function(s, k){ return s + nightsByCode[k]; }, 0) + sum(man, 'nightsIn'),
+      stays: Object.keys(air.filter(function(l){ return l.kind === 'stay' && !l.row.cancelled; }).reduce(function(o, l){ o[l.code || l.key] = 1; return o; }, {})).length + man.length
+    };
+    T.cleanToCohost = terms.cleanTo === 'cohost' ? T.clean : 0;
+    T.cleanToCohostAirbnb = terms.cleanTo === 'cohost' ? sum(air, 'clean') : 0;
+    T.flat = Math.max(0, +terms.flat || 0);
+    T.cohostEarns = T.commission + T.cleanToCohost + T.flat;
+    var exps = (extras.expenses || []).filter(function(e){ return e && +e.cents > 0; }).map(function(e){ return {what: String(e.what || '').slice(0, 80), cents: Math.round(+e.cents), by: e.by === 'owner' ? 'owner' : 'cohost'}; });
+    T.expCohost = exps.filter(function(e){ return e.by !== 'owner'; }).reduce(function(s, e){ return s + e.cents; }, 0);
+    T.expOwner = exps.filter(function(e){ return e.by === 'owner'; }).reduce(function(s, e){ return s + e.cents; }, 0);
+    T.airbnbCash = sum(air, 'net') + T.reimb + T.penalty + T.taxPass - T.taxHeld;   // Airbnb money for these lines, as paid out
+    T.manualToCohost = man.filter(function(l){ return l.by === 'cohost'; }).reduce(function(s, l){ return s + l.net; }, 0);
+    T.ownerIncome = T.net + T.reimb + T.penalty - T.taxHeld;            // earned after platform fees (tax to remit is not income)
+    T.ownerNet = T.ownerIncome - T.cohostEarns - T.expCohost - T.expOwner;
+    var rowsPaid = cohostRows.reduce(function(s, r){ return s + r.amount; }, 0);
+    T.cohostPaidRows = rowsPaid; T.cohostPaidCount = cohostRows.length;
+    T.cohostPaid = extras.cohostPaid != null && extras.cohostPaid !== '' && !isNaN(+extras.cohostPaid) ? +extras.cohostPaid : rowsPaid;
+    T.owed = T.cohostEarns + T.expCohost;
+    T.cashAtCohost = (flow === 'split' ? T.cohostPaid : flow === 'cohost' ? T.airbnbCash : 0) + T.manualToCohost;
+    T.due = T.owed - T.cashAtCohost;
+    if(flow === 'split'){
+      T.splitExpected = T.commissionAirbnb + T.cleanToCohostAirbnb;     // the part of your terms Airbnb's split can pay
+      T.splitDiff = T.cohostPaid - T.splitExpected;
+    }
+    // Cash check: what Airbnb paid out on its own dates this month for these listings, vs. this statement.
+    if(period !== 'paid'){
+      var cash = statement(parsed, month, Object.assign({}, terms, {period: 'paid', flow: 'owner'}), {exclude: ex});
+      T.paidThisMonth = cash.T.airbnbCash;
+    } else T.paidThisMonth = T.airbnbCash;
+    if(flow !== 'split' && coAll.some(function(r){ return inMonth(r.date, b); })) screen.push('Airbnb paid a co-host share for these listings this month. If that money went to you, choose "Split payout" under "Airbnb pays the money to", or this statement bills the owner for it again.');
+    var cl = Object.keys(curs), fl = Object.keys(fileCurs);
+    if(cl.length > 1) notes.push('These listings have more than one currency (' + cl.join(', ') + '). Totals add them together.');
+    var cur = cl.length === 1 ? cl[0] : cl.length ? 'mixed' : (fl.length === 1 ? fl[0] : (parsed.currency || ''));
+    return {month: month, lines: lines, reimb: res, penalties: pen, expenses: exps, cohostRows: cohostRows, taxRows: taxRows, excluded: excluded, uncounted: uncounted,
+            T: T, flow: flow, period: period, notes: notes, screen: screen, terms: terms, currency: cur, noListings: !want.length};
+  }
+
+  function fmt(c, cur){
+    if(c === null || c === undefined || isNaN(c)) return '';
+    var neg = c < 0, a = Math.abs(Math.round(c)), d = Math.floor(a / 100), r = a % 100;
+    var s = String(d).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '.' + (r < 10 ? '0' : '') + r;
+    var sym = {USD: '$', CAD: '$', AUD: '$', NZD: '$', EUR: '€', GBP: '£', '': '$'}[cur || ''];
+    s = (sym !== undefined ? sym : (cur + ' ')) + s;
+    return neg ? '-' + s : s;
+  }
+  function dstr(n){ if(n === null || n === undefined) return ''; var a = ymd(n); return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][a[1] - 1] + ' ' + a[2]; }
+  function monthName(key){ var y = key.slice(0, 4), m = +key.slice(5, 7); return ['January','February','March','April','May','June','July','August','September','October','November','December'][m - 1] + ' ' + y; }
+
+  return {splitCSV: splitCSV, parse: parse, cents: cents, parseDate: parseDate, dayNum: dayNum, monthKey: monthKey, monthBounds: monthBounds,
+          statement: statement, rowKey: rowKey, fmt: fmt, dstr: dstr, monthName: monthName, kindOf: kindOf};
+})();
+if(typeof module !== 'undefined') module.exports = CS;
+/*CORE-END*/
+</script>
+<script>
+(function(){
+'use strict';
+var $ = function(id){ return document.getElementById(id); };
+var SITE = 'https://samsbench.com/cohost-statement/';
+var APP_KEY = 'cohost-statement';
+var VERIFY_URL = 'https://app-bizz-api.whop.site/api/verify';
+var CHECKOUT_HOME = 'https://whop.com/checkout/ch_RtnlxMn1MprxlaK/';    // one-time, returns to SITE?bought=1#proSec
+var CHECKOUT_PLAN = 'https://whop.com/checkout/plan_kR05pTeTgH0Ia';    // same price; used with ?a=<affiliate>
+var PRICE = '$49';
+var GIFT = [];                      // SHA-256 of gift codes handed out in letters (outreach/gift_codes.json)
+var KEY = 'cos.v1', CSVKEY = 'cos.csv', PROKEY = 'cos.pro';
+
+/* ---------- measurement (GoatCounter). Same pattern as Handbell Chart / Booking Check: ?via follows the visitor down the funnel,
+   one hit every 700 ms (GoatCounter drops more than ~4/s per visitor), first one 1.5 s after count.js's own pageview.
+   Self-tests (?via=selftest...) send only '<event>.selftest' (marketing/TESTS.md). ---------- */
+var GC_CODE = 'cohoststatement';
+var SRC = (function(){ try{
+  var q = new URLSearchParams(location.search), v = (q.get('via') || '').toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 20) || (q.get('a') ? 'aff' : '');
+  if(v){ sessionStorage.setItem('cos.src', v); return v; }
+  return sessionStorage.getItem('cos.src') || '';
+}catch(e){ return ''; } })();
+var SELFTEST = SRC.indexOf('selftest') === 0;
+var FUNNEL_EV = {'tool-start':1, 'csv-loaded':1, 'csv-error':1, 'sample-loaded':1, 'statement-made':1, 'statement-used':1, 'print':1, 'copy-email':1,
+                 'csv-export':1, 'ytd':1, 'print-all':1, 'pro-view':1, 'pro-limit':1, 'buy-click':1, 'pro-unlocked':1, 'pro-gift':1};
+var ONCE = {}, QUEUE = [], SENDING = false, GC_READY = 0;
+function skip(){ try{ return localStorage.getItem('skipgc') === 't'; }catch(e){ return false; } }
+function names(name){ return SELFTEST ? [name + '.' + SRC] : (SRC && FUNNEL_EV[name] ? [name + '.' + SRC, name] : [name]); }
+function track(name){
+  try{ if(skip()) return; names(name).forEach(function(n){ QUEUE.push(n); }); drain(); }catch(e){}
+}
+function drain(){
+  if(SENDING || !QUEUE.length) return;
+  if(!(window.goatcounter && window.goatcounter.count)){ SENDING = true; setTimeout(function(){ SENDING = false; drain(); }, 400); return; }
+  if(!GC_READY){ GC_READY = Date.now(); }
+  if(Date.now() - GC_READY < 1500){ SENDING = true; setTimeout(function(){ SENDING = false; drain(); }, 1500 - (Date.now() - GC_READY)); return; }
+  var n = QUEUE.shift(); SENDING = true;
+  try{ window.goatcounter.count({path: n, title: n, event: true}); }catch(e){}
+  setTimeout(function(){ SENDING = false; drain(); }, 700);
+}
+function trackOnce(name){ if(ONCE[name]) return; ONCE[name] = 1; track(name); }
+
+/* ---------- state ---------- */
+function lsGet(k, d){ try{ var t = localStorage.getItem(k); return t ? JSON.parse(t) : d; }catch(e){ return d; } }
+function lsSet(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true; }catch(e){ return false; } }
+function uid(){ return Math.random().toString(36).slice(2, 9); }
+function newProfile(){ return {id: uid(), owner: '', listings: [], pct: 20, base: 'net', cleanInBase: false, cleanTo: 'cohost', flow: 'owner', flat: 0, period: 'nights', resFee: false, months: {}}; }
+var ENUMS = {base: ['gross', 'net'], cleanTo: ['cohost', 'owner'], flow: ['split', 'owner', 'cohost'], period: ['nights', 'checkin', 'paid']};
+function clean(S){
+  if(!S || typeof S !== 'object') S = {};
+  if(!Array.isArray(S.profiles)) S.profiles = [];
+  S.profiles = S.profiles.filter(function(p){ return p && typeof p === 'object'; }).map(function(p){
+    var d = newProfile();
+    Object.keys(d).forEach(function(k){ if(p[k] === undefined || (k !== 'listings' && typeof p[k] !== typeof d[k])) p[k] = d[k]; });
+    Object.keys(ENUMS).forEach(function(k){ if(ENUMS[k].indexOf(p[k]) < 0) p[k] = d[k]; });
+    p.listings = Array.isArray(p.listings) ? p.listings.filter(function(x){ return typeof x === 'string'; }) : [];
+    if(!p.months || typeof p.months !== 'object' || Array.isArray(p.months)) p.months = {};
+    Object.keys(p.months).forEach(function(k){
+      var m = p.months[k];
+      if(!m || typeof m !== 'object'){ delete p.months[k]; return; }
+      function num(v){ v = Math.round(+v); return isFinite(v) && v > 0 ? Math.min(v, 1e10) : 0; }
+      m.expenses = (Array.isArray(m.expenses) ? m.expenses : []).filter(function(e){ return e && typeof e === 'object'; })
+        .map(function(e){ return {what: String(e.what == null ? '' : e.what).slice(0, 80), cents: num(e.cents), by: e.by === 'owner' ? 'owner' : 'cohost'}; });
+      m.income = (Array.isArray(m.income) ? m.income : []).filter(function(e){ return e && typeof e === 'object'; })
+        .map(function(e){ return {what: String(e.what == null ? '' : e.what).slice(0, 80), cents: num(e.cents), fee: num(e.fee), clean: num(e.clean), nights: Math.min(31, Math.max(0, parseInt(e.nights, 10) || 0)), by: e.by === 'cohost' ? 'cohost' : 'owner'}; });
+      if(!m.exclude || typeof m.exclude !== 'object' || Array.isArray(m.exclude)) m.exclude = {};
+      if(m.paid !== '' && !(typeof m.paid === 'number' && isFinite(m.paid))) m.paid = '';
+    });
+    p.pct = Math.max(0, Math.min(100, +p.pct || 0)); p.flat = Math.max(0, Math.round(+p.flat) || 0); p.owner = String(p.owner).slice(0, 80); p.id = String(p.id).replace(/[^a-z0-9]/g, '').slice(0, 12) || uid();
+    return p;
+  });
+  if(!S.profiles.length) S.profiles.push(newProfile());
+  if(!S.profiles.some(function(p){ return p.id === S.cur; })) S.cur = S.profiles[0].id;
+  if(typeof S.biz !== 'string') S.biz = ''; S.biz = S.biz.slice(0, 80);
+  if(typeof S.logo !== 'string' || !/^data:image\/(png|jpeg|webp|gif);base64,[A-Za-z0-9+\/=]+$/.test(S.logo)) S.logo = '';
+  if(S.order !== 'mdy' && S.order !== 'dmy') delete S.order;
+  return S;
+}
+var REAL = clean(lsGet(KEY, null)), S = REAL;
+var PRO = lsGet(PROKEY, null);
+var DATA = null, DEMO = false, MONTH = '', CUR = '';
+var SAVEWARN = false;
+function save(){ if(DEMO) return; if(!lsSet(KEY, S) && !SAVEWARN){ SAVEWARN = true; say('This browser won\'t save your settings (storage full or private mode). Use "Download settings" to keep them.'); } }
+function prof(){ for(var i = 0; i < S.profiles.length; i++) if(S.profiles[i].id === S.cur) return S.profiles[i]; return S.profiles[0]; }
+function isPro(){ return !!(PRO && (PRO.email || PRO.gift)); }
+function monthOf(p, m){ var x = p.months[m]; if(!x){ x = p.months[m] = {expenses: [], income: [], exclude: {}, paid: ''}; } return x; }
+function mx(){ return monthOf(prof(), MONTH); }
+
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function say(t){ var e = $('toast'); e.textContent = t; e.style.display = 'block'; clearTimeout(say.t); say.t = setTimeout(function(){ e.style.display = 'none'; }, 3600); }
+function money(c){ return CS.fmt(c, CUR !== 'mixed' ? CUR : ''); }
+function moneyIn(s){ var c = CS.cents(s); return c === null ? 0 : c; }
+function ownerOf(l){ return S.profiles.filter(function(p){ return p.listings.indexOf(l) >= 0; }); }
+
+/* ---------- loading the CSV ---------- */
+function load(text, demo){
+  var p = CS.parse(text, demo ? null : null);
+  trackOnce('tool-start');
+  if(!p.ok){ $('loadMsg').innerHTML = '<p class="err">' + esc(p.error) + '</p>'; track('csv-error'); return false; }
+  if(demo){ DEMO = true; S = sampleState(p); }
+  else {
+    DEMO = false; S = REAL; S.order = p.order;
+    if(!lsSet(CSVKEY, text)){ try{ localStorage.removeItem(CSVKEY); }catch(e){} say('This file is too big to keep in the browser. It works now; load it again next visit.'); }
+    // one listing, nobody set up yet: give it to the first owner. Otherwise never re-assign listings by ourselves.
+    if(p.listings.length === 1 && S.profiles.every(function(x){ return !x.listings.length; })) prof().listings = p.listings.slice();
+    save(); track('csv-loaded');
+  }
+  DATA = p; MONTH = ''; MONTH = pickMonth();
+  renderAll();
+  if(demo) track('sample-loaded'); else trackOnce('statement-made');
+  return true;
+}
+/* Default month: the latest month before this one that has lines for this owner; else the latest past month; else the last. */
+function pickMonth(){
+  if(!DATA) return '';
+  var ms = DATA.months;
+  if(MONTH && ms.indexOf(MONTH) >= 0) return MONTH;
+  var now = new Date(), cur = now.getFullYear() + '-' + ('0' + (now.getMonth() + 1)).slice(-2);
+  var past = ms.filter(function(m){ return m < cur; }).reverse(), p = prof();
+  for(var i = 0; i < past.length; i++){ if(statementFor(p, past[i]).lines.length) return past[i]; }
+  return past.length ? past[0] : ms[ms.length - 1];
+}
+function readFile(f){
+  if(!f) return;
+  if(f.size > 8e6){ $('loadMsg').innerHTML = '<p class="err">That file is over 8 MB. Export a shorter date range.</p>'; return; }
+  var r = new FileReader();
+  r.onload = function(){ load(String(r.result || ''), false); };
+  r.onerror = function(){ $('loadMsg').innerHTML = '<p class="err">Couldn\'t read that file.</p>'; };
+  r.readAsText(f);
+}
+function leaveDemo(){
+  DEMO = false; S = REAL; DATA = null; MONTH = '';
+  var saved = lsGet(CSVKEY, ''); if(saved){ var p = CS.parse(saved, S.order); if(p.ok){ DATA = p; MONTH = pickMonth(); } }
+  $('loadMsg').innerHTML = ''; renderAll();
+}
+
+/* Sample: two listings, last month, with a stay running into this month, a refund, a damage payout.
+   Made-up figures shaped like Airbnb's export (gross includes cleaning; host fee 3% of gross on the split-fee model). */
+function sampleCSV(){
+  var now = new Date(), y = now.getFullYear(), m = now.getMonth();
+  var ly = m === 0 ? y - 1 : y, lm = m === 0 ? 12 : m;
+  function d(dd, mm, yy){ return ('0' + mm).slice(-2) + '/' + ('0' + dd).slice(-2) + '/' + yy; }
+  var ny = lm === 12 ? ly + 1 : ly, nm = lm === 12 ? 1 : lm + 1;
+  var last = new Date(ly, lm, 0).getDate();
+  var H = 'Date,Arriving by date,Type,Confirmation code,Booking date,Start date,End date,Nights,Guest,Listing,Details,Reference code,Currency,Amount,Paid out,Service fee,Fast pay fee,Cleaning fee,Gross earnings,Occupancy taxes,Earnings year';
+  var rows = [], k = 0;
+  function stay(lst, guest, sd, sm, sy, ed, em, ey, nights, rate, cleanF){
+    var gross = nights * rate + cleanF, fee = Math.round(gross * 3) / 100, code = 'HM' + (lst === 'Juniper Cabin' ? 'J' : 'H') + (++k) + 'QX4';
+    rows.push([d(sd, sm, sy), '', 'Reservation', code, '', d(sd, sm, sy), d(ed, em, ey), nights, guest, lst, '', '', 'USD', (gross - fee).toFixed(2), '', fee.toFixed(2), '', cleanF.toFixed(2), gross.toFixed(2), (gross * 0.06).toFixed(2), ly].join(','));
+    return {code: code};
+  }
+  var a = stay('Juniper Cabin', 'Maya R.', 2, lm, ly, 5, lm, ly, 3, 189, 95);
+  stay('Juniper Cabin', 'Tomás G.', 7, lm, ly, 11, lm, ly, 4, 175, 95);
+  stay('Juniper Cabin', 'Priya S.', 14, lm, ly, 16, lm, ly, 2, 199, 95);
+  stay('Juniper Cabin', 'Hollis family', 19, lm, ly, 24, lm, ly, 5, 182, 95);
+  stay('Juniper Cabin', 'Ken W.', last - 1, lm, ly, 2, nm, ny, 3, 210, 95);
+  stay('Harbor Loft', 'Ana P.', 3, lm, ly, 6, lm, ly, 3, 142, 70);
+  stay('Harbor Loft', 'Leo B.', 9, lm, ly, 12, lm, ly, 3, 139, 70);
+  stay('Harbor Loft', 'June K.', 20, lm, ly, 27, lm, ly, 7, 128, 70);
+  rows.push([d(9, lm, ly), '', 'Adjustment', a.code, '', d(2, lm, ly), d(5, lm, ly), 3, 'Maya R.', 'Juniper Cabin', 'Partial refund: hot tub down', '', 'USD', '-77.60', '', '-2.40', '', '', '-80.00', '', ly].join(','));
+  rows.push([d(18, lm, ly), '', 'Resolution Payout', a.code, '', '', '', '', 'Maya R.', 'Juniper Cabin', 'Stained rug', '', 'USD', '65.00', '', '', '', '', '', '', ly].join(','));
+  rows.push([d(6, lm, ly), d(7, lm, ly), 'Payout', '', '', '', '', '', '', '', 'Transfer to Checking 6612 (USD)', '', 'USD', '', '520.11', '', '', '', '', '', ''].join(','));
+  return H + '\n' + rows.join('\n') + '\n';
+}
+function sampleState(p){
+  var a = newProfile(); a.owner = 'Dana Whitfield'; a.listings = ['Juniper Cabin']; a.pct = 20; a.cleanTo = 'cohost'; a.flow = 'owner';
+  var b = newProfile(); b.owner = 'Marcus Lee'; b.listings = ['Harbor Loft']; b.pct = 18; b.cleanTo = 'owner'; b.flow = 'owner';
+  return clean({profiles: [a, b], cur: a.id, biz: 'Pinecrest Hosting'});
+}
+
+/* ---------- controls ---------- */
+function segSet(id, v){ Array.prototype.forEach.call($(id).querySelectorAll('button'), function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-v') === v ? 'true' : 'false'); }); }
+function segOn(id, key){
+  $(id).addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b || b.disabled) return;
+    prof()[key] = b.getAttribute('data-v'); save(); trackOnce('tool-start'); renderAll();
+  });
+}
+function allListings(){
+  var o = {};
+  (DATA ? DATA.listings : []).forEach(function(l){ o[l] = 1; });
+  S.profiles.forEach(function(p){ p.listings.forEach(function(l){ o[l] = 1; }); });
+  return Object.keys(o).sort();
+}
+function renderControls(){
+  var p = prof();
+  $('prof').innerHTML = S.profiles.map(function(x, i){ return '<option value="' + esc(x.id) + '"' + (x.id === S.cur ? ' selected' : '') + '>' + esc(x.owner || 'Owner ' + (i + 1)) + '</option>'; }).join('');
+  $('profDel').hidden = S.profiles.length < 2;
+  if(document.activeElement !== $('owner')) $('owner').value = p.owner;
+  if(document.activeElement !== $('biz')) $('biz').value = S.biz;
+  if(document.activeElement !== $('pct')) $('pct').value = p.pct;
+  if(document.activeElement !== $('flat')) $('flat').value = p.flat ? (p.flat / 100).toFixed(2) : '';
+  segSet('base', p.base); segSet('cleanTo', p.cleanTo); segSet('flow', p.flow); segSet('period', p.flow === 'split' ? 'paid' : p.period);
+  Array.prototype.forEach.call($('period').querySelectorAll('button'), function(b){ b.disabled = p.flow === 'split'; });
+  $('periodNote').textContent = p.flow === 'split' ? 'On a split payout the statement follows Airbnb\'s dates, so your share lines up with what Airbnb paid you.' : '';
+  $('cleanIn').checked = !!p.cleanInBase; $('resFee').checked = !!p.resFee;
+  // listings: everything in the file plus anything an owner already has
+  var L = allListings(), inFile = DATA ? DATA.listings : [];
+  if(L.length){
+    $('lstWrap').hidden = false;
+    $('lst').innerHTML = L.map(function(l, i){
+      var others = ownerOf(l).filter(function(x){ return x.id !== p.id; }).map(function(x){ return x.owner || 'another owner'; });
+      var tag = (inFile.indexOf(l) < 0 ? ' <span class="owned">(not in this file)</span>' : '') + (others.length ? ' <span class="owned">(also on ' + esc(others.join(', ')) + ')</span>' : '');
+      return '<label class="chk"><input type="checkbox" data-l="' + i + '"' + (p.listings.indexOf(l) >= 0 ? ' checked' : '') + '><span>' + esc(l) + tag + '</span></label>';
+    }).join('');
+  } else $('lstWrap').hidden = true;
+  if(DATA){
+    $('month').innerHTML = DATA.months.slice().reverse().map(function(m){ return '<option value="' + m + '"' + (m === MONTH ? ' selected' : '') + '>' + CS.monthName(m) + '</option>'; }).join('');
+    $('month').disabled = false;
+  } else { $('month').innerHTML = '<option>Load the CSV first</option>'; $('month').disabled = true; }
+  $('splitWrap').hidden = p.flow !== 'split';
+  var m = DATA ? mx() : {expenses: [], income: [], exclude: {}, paid: ''};
+  if(!$('exps').contains(document.activeElement)){
+    $('exps').innerHTML = m.expenses.map(function(e, i){
+      return '<div class="exp" data-i="' + i + '"><input type="text" data-k="what" value="' + esc(e.what) + '" placeholder="What (e.g. Plumber, Jun 3)" aria-label="Expense" maxlength="80"><input type="text" data-k="amt" inputmode="decimal" value="' + (e.cents ? (e.cents / 100).toFixed(2) : '') + '" placeholder="0.00" aria-label="Amount">' +
+        '<select data-k="by" aria-label="Paid by"><option value="cohost"' + (e.by !== 'owner' ? ' selected' : '') + '>I paid</option><option value="owner"' + (e.by === 'owner' ? ' selected' : '') + '>Owner paid</option></select><button class="x" data-k="x" aria-label="Remove">×</button></div>';
+    }).join('') || '<p style="margin:4px 0;color:var(--ink2)">None yet. Cleaning invoices, supplies, repairs you paid for the owner go here.</p>';
+  }
+  if(!$('incs').contains(document.activeElement)){
+    $('incs').innerHTML = m.income.map(function(e, i){
+      function v(k){ return e[k] ? (e[k] / 100).toFixed(2) : ''; }
+      return '<div class="inc" data-i="' + i + '"><input class="wide" type="text" data-k="what" value="' + esc(e.what) + '" placeholder="e.g. Vrbo, Smith, Mar 3-6" maxlength="80" aria-label="Booking">' +
+        '<label>Guest paid you<small>gross, incl. cleaning</small><input type="text" data-k="cents" inputmode="decimal" value="' + v('cents') + '" placeholder="0.00"></label>' +
+        '<label>Platform fee<small>&nbsp;</small><input type="text" data-k="fee" inputmode="decimal" value="' + v('fee') + '" placeholder="0.00"></label>' +
+        '<label>Cleaning<small>&nbsp;</small><input type="text" data-k="clean" inputmode="decimal" value="' + v('clean') + '" placeholder="0.00"></label>' +
+        '<label>Nights<input type="number" data-k="nights" min="0" max="31" value="' + (e.nights || '') + '"></label>' +
+        '<label class="wide" style="display:flex;gap:8px;align-items:center">Paid to <select data-k="by" style="width:auto"><option value="owner"' + (e.by !== 'cohost' ? ' selected' : '') + '>the owner</option><option value="cohost"' + (e.by === 'cohost' ? ' selected' : '') + '>me</option></select><button class="x btn small ghost" data-k="x" style="margin-left:auto">Remove</button></label></div>';
+    }).join('');
+  }
+  $('expAdd').disabled = !DATA; $('incAdd').disabled = !DATA;
+  if(document.activeElement !== $('paidIn')) $('paidIn').value = m.paid !== '' && m.paid != null ? (m.paid / 100).toFixed(2) : '';
+}
+function termsOf(p){ return {pct: p.pct, base: p.base, cleanInBase: p.cleanInBase, cleanTo: p.cleanTo, flow: p.flow, flat: p.flat, period: p.period, resFee: p.resFee, listings: p.listings}; }
+function statementFor(p, month){
+  var m = p.months[month] || {expenses: [], income: [], exclude: {}, paid: ''};
+  return CS.statement(DATA, month, termsOf(p), {expenses: m.expenses, income: m.income, exclude: m.exclude, cohostPaid: m.paid === '' || m.paid == null ? null : m.paid});
+}
+
+/* ---------- the statement paper ---------- */
+function baseWords(p){
+  return p.pct + '% of ' + (p.base === 'gross' ? 'gross earnings' : 'earnings after Airbnb\'s fee') + (p.cleanInBase ? '' : ', cleaning not included');
+}
+function lineLabel(l){
+  var r = l.row;
+  if(l.manual) return {who: esc(l.what), sub: (l.nights ? l.nights + ' night' + (l.nights === 1 ? '' : 's') + ' · ' : '') + 'booked outside Airbnb, paid to ' + (l.by === 'cohost' ? esc(S.biz || 'the co-host') : 'the owner') + (l.clean ? ' · cleaning ' + money(l.clean) : '')};
+  var dates = l.start !== null && l.end !== null ? CS.dstr(l.start) + ' – ' + CS.dstr(l.end) : '';
+  var det = r.details ? ': ' + esc(r.details) : '';
+  if(l.kind === 'adjust') return {who: esc(l.guest || l.code || 'Adjustment'), sub: 'Adjustment ' + CS.dstr(r.date) + det};
+  if(r.cancelled) return {who: esc(l.guest || l.code), sub: 'Cancelled booking, paid ' + CS.dstr(r.date) + (dates ? ' · was ' + dates : '')};
+  if(r.installment) return {who: esc(l.guest || l.code), sub: 'Long stay ' + dates + ' (' + l.nights + ' nights), monthly payment ' + CS.dstr(r.date)};
+  return {who: esc(l.guest || l.code || ''), sub: (dates || CS.dstr(r.date)) + (l.partial ? ' · ' + l.nightsIn + ' of ' + l.whole.nights + ' nights this month (whole stay ' + money(l.whole.gross) + ')' : '') + (l.clean ? ' · cleaning ' + money(l.clean) : '')};
+}
+function today(){ try{ return new Date().toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'}); }catch(e){ return ''; } }
+function paperHTML(p, st, opts){
+  opts = opts || {};
+  CUR = st.currency;
+  var T = st.T, biz = S.biz || 'Your business name', owner = p.owner || 'Owner', many = p.listings.length > 1, who = esc(S.biz || 'the co-host');
+  var h = '<article class="paper">' + (opts.demo ? '<span class="demo">Sample data</span>' : '');
+  h += '<header class="ph"><div>' + (isPro() && S.logo ? '<img class="logo" src="' + esc(S.logo) + '" alt="">' : '') +
+       '<div class="biz">' + esc(biz) + '</div><div class="who">Prepared for <b>' + esc(owner) + '</b><br>' + esc(p.listings.join(' · ')) + '</div></div>' +
+       '<div class="doc"><div class="t">Owner statement</div><div class="m">' + CS.monthName(st.month) + '</div><div class="who">' + T.stays + ' booking' + (T.stays === 1 ? '' : 's') + ' · ' + T.nights + ' night' + (T.nights === 1 ? '' : 's') + (st.period === 'nights' ? ' stayed this month' : ' in these bookings') + '<br>Issued ' + esc(today()) + '</div></div></header>';
+  h += '<section class="sec"><h3>Bookings and adjustments</h3>';
+  if(!st.lines.length) h += '<p>No bookings for these listings in ' + CS.monthName(st.month) + '.</p>';
+  else {
+    h += '<table class="st"><thead><tr><th>Guest · dates</th><th>Nights</th><th>Gross</th><th>Platform fee</th><th>Net</th><th>Mgmt fee</th></tr></thead><tbody>';
+    st.lines.forEach(function(l){
+      var lb = lineLabel(l), lo = opts.screen ? (l.manual ? '' : '<button class="lo" data-lo="' + esc(l.key) + '" title="Leave this line off the statement">leave off</button>') : '';
+      h += '<tr' + (l.kind !== 'stay' && !l.manual || l.row.cancelled ? ' class="adj"' : '') + '><td>' + lb.who + (many && l.listing ? ' · ' + esc(l.listing) : '') + lo + '<span class="sub">' + lb.sub + '</span></td>' +
+           '<td class="num" data-k="Nights">' + (l.nightsIn || '') + '</td><td class="num" data-k="Gross">' + money(l.gross) + '</td><td class="num" data-k="Platform fee">' + money(-(l.fee + l.fp)) + '</td>' +
+           '<td class="num" data-k="Net">' + money(l.net) + '</td><td class="num" data-k="Mgmt fee">' + money(-l.commission) + '</td></tr>';
+    });
+    var ln = st.lines.reduce(function(s, l){ return s + (l.nightsIn || 0); }, 0);
+    h += '</tbody><tfoot><tr><td>Total</td><td class="num" data-k="Nights">' + (ln || '') + '</td><td class="num" data-k="Gross">' + money(T.gross) + '</td><td class="num" data-k="Platform fee">' + money(-(T.fee + T.fp)) + '</td><td class="num" data-k="Net">' + money(T.net) + '</td><td class="num" data-k="Mgmt fee">' + money(-T.commissionLines) + '</td></tr></tfoot></table>';
+  }
+  h += '</section>';
+  h += '<section class="sec"><h3>Summary</h3><table class="wf">';
+  h += '<tr><td>Gross earnings<span class="sub">' + (T.grossOther ? 'Airbnb ' + money(T.grossAirbnb) + ', other bookings ' + money(T.grossOther) + '; ' : '') + 'includes ' + money(T.clean) + ' guest cleaning fees</span></td><td class="v num">' + money(T.gross) + '</td></tr>';
+  h += '<tr><td>Platform fees<span class="sub">Airbnb host service fee ' + money(T.feeAirbnb) + (T.fp ? ' (incl. Fast Pay ' + money(T.fp) + ')' : '') + (T.grossOther ? '; other platforms ' + money(T.feeOther) : '') + '</span></td><td class="v num">' + money(-(T.fee + T.fp)) + '</td></tr>';
+  var pos = st.reimb.filter(function(r){ return r.net >= 0; }), neg = st.reimb.filter(function(r){ return r.net < 0; });
+  function rl(arr){ return arr.map(function(r){ return '<span class="sub">' + CS.dstr(r.row.date) + (r.row.details ? ' · ' + esc(r.row.details) : '') + ' · ' + money(r.net || r.row.net) + '</span>'; }).join(''); }
+  function tot(arr){ return arr.reduce(function(s, r){ return s + r.net; }, 0); }
+  if(pos.length) h += '<tr><td>Damage reimbursements from Airbnb' + rl(pos) + '</td><td class="v num">' + money(tot(pos)) + '</td></tr>';
+  if(neg.length) h += '<tr><td>Resolution Center deductions' + rl(neg) + '</td><td class="v num">' + money(tot(neg)) + '</td></tr>';
+  if(st.penalties.length) h += '<tr><td>Host cancellation fees' + rl(st.penalties) + '</td><td class="v num">' + money(T.penalty) + '</td></tr>';
+  if(T.taxHeld) h += '<tr><td>Tax withheld by Airbnb<span class="sub">counts toward the owner\'s income tax</span></td><td class="v num">' + money(-T.taxHeld) + '</td></tr>';
+  h += '<tr><td>Management fee<span class="sub">' + esc(baseWords(p)) + ' · on ' + money(T.base) + (T.commissionReimb ? ' (bookings ' + money(T.commissionLines) + ', reimbursements ' + money(T.commissionReimb) + ')' : '') + '</span></td><td class="v num">' + money(-T.commission) + '</td></tr>';
+  if(T.cleanToCohost) h += '<tr><td>Cleaning fees to ' + who + '<span class="sub">guests\' cleaning fees, for paying the cleaners</span></td><td class="v num">' + money(-T.cleanToCohost) + '</td></tr>';
+  if(T.flat) h += '<tr><td>Monthly fee</td><td class="v num">' + money(-T.flat) + '</td></tr>';
+  st.expenses.forEach(function(e){ h += '<tr><td>' + esc(e.what || 'Expense') + '<span class="sub">' + (e.by === 'owner' ? 'paid by the owner' : 'paid by ' + who) + '</span></td><td class="v num">' + money(-e.cents) + '</td></tr>'; });
+  h += '<tr class="tot"><td>Owner\'s net for ' + CS.monthName(st.month).split(' ')[0] + '</td><td class="v num">' + money(T.ownerNet) + '</td></tr>';
+  h += '</table></section>';
+  var s = settle(p, st);
+  h += '<section class="stub"><div class="say"><b>' + s.head + '</b>' + s.body + '</div><div class="' + (T.due === 0 ? 'amt zero' : 'amt') + '">' + money(Math.abs(T.due)) + '</div></section>';
+  var notes = st.notes.slice();
+  var airbnbHere = T.airbnbCash;
+  if(st.period !== 'paid' && T.paidThisMonth !== airbnbHere) notes.push('Matching Airbnb\'s payouts: Airbnb\'s payouts dated ' + CS.monthName(st.month) + ' for these listings come to ' + money(T.paidThisMonth) + '. This statement counts ' + money(airbnbHere) + ' because a stay that crosses a month end is split by night; the rest is on the other month\'s statement.');
+  if(T.taxPass) notes.push('Occupancy tax of ' + money(T.taxPass) + ' was paid out with these bookings for the owner to remit to the tax office. It is not income, so it is not in the owner\'s net.');
+  if(T.taxRemit) notes.push('Airbnb collected and remitted ' + money(T.taxRemit) + ' in occupancy tax on these bookings. It is not counted above.');
+  if(notes.length) h += '<div class="pnotes">' + notes.map(function(n){ return '<p>' + esc(n) + '</p>'; }).join('') + '</div>';
+  h += '<div class="pfoot"><span>From Airbnb\'s earnings export' + (st.period === 'nights' ? '; a stay across two months is split by night, its cleaning fee counted in the check-in month' : st.period === 'checkin' ? '; bookings counted in their check-in month' : '; lines counted on Airbnb\'s payout dates') + '.</span>' +
+       (isPro() ? '' : '<span>Made with Co-Host Statement · samsbench.com/cohost-statement</span>') + '</div>';
+  return h + '</article>';
+}
+function settle(p, st){
+  var T = st.T, who = esc(S.biz || 'the co-host'), owner = esc(p.owner || 'the owner'), bits = [];
+  var earned = (st.period === 'paid' ? 'Airbnb paid ' : 'Airbnb money for this month\'s bookings comes to ') + money(T.airbnbCash) + ' after its fees' + (T.reimb ? (T.reimb > 0 ? ', plus ' : ', less ') + money(Math.abs(T.reimb)) + ' reimbursements' : '') + (T.penalty ? ', less ' + money(-T.penalty) + ' cancellation fees' : '') + (T.taxPass ? ', plus ' + money(T.taxPass) + ' tax to remit' : '') + (T.taxHeld ? ', less ' + money(T.taxHeld) + ' withheld tax' : '');
+  if(p.flow === 'split') bits.push('Airbnb already sent ' + who + ' ' + money(T.cohostPaid) + ' as the co-host share of these bookings.');
+  else if(p.flow === 'cohost') bits.push(earned + ', paid to ' + who + (T.taxPass ? ', including ' + money(T.taxPass) + ' occupancy tax that goes on to the owner to remit' : '') + '.');
+  else bits.push(earned + ', paid to the owner.');
+  if(T.manualToCohost) bits.push(who + ' received ' + money(T.manualToCohost) + ' from bookings outside Airbnb.');
+  bits.push(who + '\'s fees come to ' + money(T.cohostEarns) + (T.expCohost ? ', plus ' + money(T.expCohost) + ' in expenses ' + who + ' paid' : '') + '.');
+  if(T.expOwner) bits.push('Expenses the owner paid directly (' + money(T.expOwner) + ') are in the owner\'s net but not in this amount.');
+  var head = T.due > 0 ? owner + ' pays ' + who : T.due < 0 ? who + ' pays ' + owner : 'Nothing to settle this month';
+  return {head: head, body: bits.join(' ')};
+}
+function checkHTML(p, st){
+  var T = st.T, h = '';
+  if(p.flow === 'split'){
+    var diff = T.splitDiff;
+    if(!T.cohostPaidCount && $('paidIn').value === '') h += '<div class="check bad"><b>No co-host payout lines for these bookings in ' + CS.monthName(st.month) + '.</b> If Airbnb paid you directly, type the amount in step 3 (it shows on your own Earnings page). Until then the statement assumes Airbnb paid you nothing.</div>';
+    else h += '<div class="check' + (Math.abs(diff) > 100 ? ' bad' : '') + '"><b>Split payout check:</b> Airbnb paid you ' + money(T.cohostPaid) + '; your terms (fee' + (T.cleanToCohostAirbnb ? ' + cleaning' : '') + ' on Airbnb bookings) come to ' + money(T.splitExpected) + '. ' +
+      (Math.abs(diff) <= 100 ? 'They match within a dollar.' : (diff < 0 ? 'Airbnb paid you ' + money(-diff) + ' less.' : 'Airbnb paid you ' + money(diff) + ' more.') + ' Check the payout setting on the listing in Airbnb.') + ' Not printed.</div>';
+  }
+  st.screen.forEach(function(t){ h += '<div class="check bad">' + esc(t) + ' (Not printed.)</div>'; });
+  if(st.uncounted.length) h += '<div class="check bad"><b>Left off, type not recognised:</b> ' + st.uncounted.map(function(r){ return esc(r.type) + ' ' + CS.dstr(r.date) + ' ' + money(r.net); }).join('; ') + '. Add it as an expense or other booking if it belongs on the statement.</div>';
+  if(st.penalties.length) h += '<div class="check">A host cancellation fee is on this statement as the owner\'s cost. If you cancelled, leave it off and absorb it.</div>';
+  if(p.cleanTo === 'cohost' && st.expenses.some(function(e){ return /clean|turnover|maid|housekeep/i.test(e.what); })) h += '<div class="check bad">The guests\' cleaning fees already go to you, and there is also a cleaning expense here. Is the owner paying for cleaning twice?</div>';
+  var dup = p.listings.filter(function(l){ return ownerOf(l).length > 1; });
+  if(dup.length) h += '<div class="check bad">' + esc(dup.join(', ')) + ' is also ticked for another owner, so its bookings would be on two statements.</div>';
+  if(DATA && DATA.warnings.length) h += '<div class="check">' + DATA.warnings.map(esc).join(' ') + '</div>';
+  return h;
+}
+function renderPaper(){
+  var p = prof();
+  if(!DATA){
+    $('paperWrap').innerHTML = '<div class="paper"><div class="empty"><b>Your statement shows up here.</b>Load Airbnb\'s earnings CSV in step 1, or try the sample to see one.</div></div>';
+    $('checkWrap').innerHTML = ''; bar(null); return;
+  }
+  if(!p.listings.length){
+    $('paperWrap').innerHTML = '<div class="paper"><div class="empty"><b>Tick ' + esc(p.owner || 'this owner') + '\'s listings.</b>In step 2, under "This owner\'s listings". Only those listings go on this owner\'s statement.</div></div>';
+    $('checkWrap').innerHTML = ''; bar(null); return;
+  }
+  var st = statementFor(p, MONTH);
+  $('paperWrap').innerHTML = paperHTML(p, st, {demo: DEMO, screen: true});
+  var m = mx(), ex = Object.keys(m.exclude || {});
+  $('checkWrap').innerHTML = checkHTML(p, st);
+  $('exclWrap').innerHTML = st.excluded.length ? '<p style="margin:10px 0 0;font-size:14.5px"><b>Left off this month:</b> ' + st.excluded.map(function(r){ return esc(r.guest || r.type) + ' ' + CS.dstr(r.date) + ' <button class="lo" data-back="' + esc(CS.rowKey(r)) + '">put back</button>'; }).join(' · ') + '</p>' : '';
+  $('paidHint').textContent = p.flow === 'split' ? (st.T.cohostPaidCount ? 'From ' + st.T.cohostPaidCount + ' co-host payout line' + (st.T.cohostPaidCount === 1 ? '' : 's') + ' in the file: ' + money(st.T.cohostPaidRows) + '. Type over it to change.' : 'The file has no co-host payout lines for this month. Type what Airbnb paid you.') : '';
+  bar(st, p);
+}
+function bar(st, p){
+  var on = !!st;
+  $('bar').classList.toggle('on', on); document.body.classList.toggle('hasbar', on);
+  if(!on) return;
+  $('barT').innerHTML = settle(p, st).head + ' · ' + CS.monthName(st.month);
+  $('barA').textContent = money(Math.abs(st.T.due));
+}
+function renderLoaded(){
+  if(!DATA) return;
+  var p = DATA, h = '<div class="loaded"><b>' + (DEMO ? 'Sample loaded' : 'Read ' + p.rows.length + ' lines') + '</b>' + (p.skipped && p.skipped.payout ? ' (skipped ' + p.skipped.payout + ' bank transfer line' + (p.skipped.payout === 1 ? '' : 's') + ')' : '') + ' · ' + p.listings.length + ' listing' + (p.listings.length === 1 ? '' : 's') + ' · ' +
+    CS.monthName(p.months[0]) + (p.months.length > 1 ? ' to ' + CS.monthName(p.months[p.months.length - 1]) : '') + ' · dates read as ' + (p.order === 'dmy' ? 'day/month' : 'month/day');
+  if(!DEMO) h += ' <button class="btn small ghost" id="swapOrder" style="margin-left:4px">Switch</button>';
+  h += '</div>';
+  var free = p.listings.filter(function(l){ return !ownerOf(l).length; });
+  if(!DEMO && free.length) h += '<div class="warnbox">Not on any owner yet: <b>' + esc(free.join(', ')) + '</b>. Tick each one under the right owner in step 2.</div>';
+  if(p.unlisted) h += '<div class="warnbox">' + p.unlisted + ' line' + (p.unlisted === 1 ? ' has' : 's have') + ' no listing name, so ' + (p.unlisted === 1 ? 'it isn\'t' : 'they aren\'t') + ' on any statement.</div>';
+  if(DEMO) h += '<p style="font-size:14.5px">Made-up bookings for two owners. Your own owners and settings are untouched. <button class="btn small ghost" id="demoOff">Back to my data</button></p>';
+  $('loadMsg').innerHTML = h;
+  if($('demoOff')) $('demoOff').onclick = leaveDemo;
+  if($('swapOrder')) $('swapOrder').onclick = function(){
+    var text = lsGet(CSVKEY, ''); if(!text) return say('Load the file again to switch.');
+    var other = p.order === 'dmy' ? 'mdy' : 'dmy', np = CS.parse(text, other);
+    if(!np.ok || !np.months.length || np.rows.length < p.rows.length){ say('Those dates don\'t work the other way round.'); return; }
+    S.order = other; save(); DATA = np; MONTH = ''; MONTH = pickMonth(); renderAll();
+  };
+}
+function renderAll(){ renderControls(); renderLoaded(); renderPaper(); renderPro(); }
+
+/* ---------- actions ---------- */
+function used(){ if(!DEMO) trackOnce('statement-used'); }
+var BATCH = false;
+function ready(p){
+  if(!DATA){ say('Load the CSV or the sample first.'); return false; }
+  if(!p.listings.length){ say('Tick this owner\'s listings first (step 2).'); return false; }
+  if(!p.owner.trim() || !S.biz.trim()){ say('Add the owner\'s name and your business name first (step 2).'); (p.owner.trim() ? $('biz') : $('owner')).focus(); return false; }
+  return true;
+}
+function printPapers(html, title){
+  $('printArea').innerHTML = html; BATCH = true;
+  var t = document.title; document.title = title || t;
+  setTimeout(function(){ window.print(); document.title = t; BATCH = false; }, 50);
+}
+window.addEventListener('beforeprint', function(){   // Ctrl+P prints the statement on screen
+  if(BATCH) return;
+  var p = prof();
+  if(!DATA || !p.listings.length || !p.owner.trim() || !S.biz.trim()){ $('printArea').innerHTML = '<article class="paper"><p>Nothing to print yet: load the CSV, tick the owner\'s listings, and add the owner\'s name and your business name. Then use the Print button.</p></article>'; return; }
+  $('printArea').innerHTML = paperHTML(p, statementFor(p, MONTH), {});
+});
+function docTitle(p){ return 'Owner statement ' + (p.owner || '') + ' ' + CS.monthName(MONTH) + ' - ' + (S.biz || ''); }
+$('print').onclick = function(){
+  var p = prof(); if(!ready(p)) return;
+  track('print'); used();
+  printPapers(paperHTML(p, statementFor(p, MONTH), {}), docTitle(p));
+};
+$('copy').onclick = function(){
+  var p = prof(); if(!ready(p)) return;
+  var st = statementFor(p, MONTH), T = st.T, s = settle(p, st); CUR = st.currency;
+  var unesc = function(t){ var d = document.createElement('div'); d.innerHTML = t; return d.textContent; };
+  var lines = ['Hi ' + (p.owner ? p.owner.split(' ')[0] : 'there') + ',', '', 'Here is the statement for ' + CS.monthName(MONTH) + ' (' + p.listings.join(', ') + ').', '',
+    'Bookings: ' + T.stays + ' (' + T.nights + ' nights)',
+    'Gross earnings: ' + money(T.gross),
+    'Airbnb fees: ' + money(-(T.fee + T.fp))];
+  if(T.reimb) lines.push('Reimbursements and deductions: ' + money(T.reimb));
+  if(T.taxHeld) lines.push('Tax withheld by Airbnb: ' + money(-T.taxHeld));
+  lines.push('Management fee (' + baseWords(p) + '): ' + money(-T.commission));
+  if(T.cleanToCohost) lines.push('Cleaning fees (to pay the cleaners): ' + money(-T.cleanToCohost));
+  if(T.flat) lines.push('Monthly fee: ' + money(-T.flat));
+  st.expenses.forEach(function(e){ lines.push((e.what || 'Expense') + (e.by === 'owner' ? ' (you paid)' : '') + ': ' + money(-e.cents)); });
+  lines.push('Your net for the month: ' + money(T.ownerNet), '', unesc(s.head) + ': ' + money(Math.abs(T.due)), unesc(s.body), '', 'The full statement is attached.', '', S.biz || '');
+  if(!isPro()) lines.push('', '(Statement made with Co-Host Statement: ' + SITE + '?via=email)');
+  var text = lines.join('\n');
+  function done(){ say('Copied. Paste it into your email.'); track('copy-email'); used(); }
+  if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, function(){ fallback(text); done(); });
+  else { fallback(text); done(); }
+};
+function fallback(text){ var t = document.createElement('textarea'); t.value = text; document.body.appendChild(t); t.select(); try{ document.execCommand('copy'); }catch(e){} t.remove(); }
+function proGate(why){
+  track('pro-limit');
+  say(why + ' is part of Pro (' + PRICE + ' once).');
+  $('proSec').scrollIntoView({behavior: 'smooth'});
+}
+function iso(n){ if(n === null || n === undefined) return ''; var d = new Date(n * 86400000); return d.toISOString().slice(0, 10); }
+$('csvOut').onclick = function(){
+  if(!isPro()) return proGate('CSV download');
+  var p = prof(); if(!ready(p)) return;
+  var st = statementFor(p, MONTH), T = st.T;
+  function q(v){ v = String(v == null ? '' : v); if(/^[=+\-@\t\r]/.test(v) && !/^-?\d+(\.\d+)?$/.test(v)) v = "'" + v; return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
+  function n(c){ return (c / 100).toFixed(2); }
+  var out = [['Month', 'Listing', 'Line', 'Confirmation code', 'Guest or description', 'Airbnb date', 'Start', 'End', 'Nights this month', 'Gross', 'Cleaning', 'Platform fees', 'Net', 'Fee base', 'Management fee'].map(q).join(',')];
+  st.lines.concat(st.reimb).forEach(function(l){ out.push([MONTH, l.listing || '', l.manual ? 'other booking' : l.row.type || l.kind, l.code || '', l.guest || '', l.manual ? '' : iso(l.row.date), iso(l.start), iso(l.end), l.nightsIn || '', n(l.gross), n(l.clean), n(-(l.fee + l.fp)), n(l.net), n(l.base), n(l.commission)].map(q).join(',')); });
+  out.push('');
+  out.push(['Month', 'Summary', 'Amount'].map(q).join(','));
+  [['Net from bookings and reimbursements', T.net + T.reimb], ['Host cancellation fees', T.penalty], ['Tax withheld by Airbnb', -T.taxHeld], ['Management fee', -T.commission], ['Cleaning fees kept by co-host', -T.cleanToCohost], ['Monthly fee', -T.flat]]
+    .concat(st.expenses.map(function(e){ return [(e.what || 'Expense') + (e.by === 'owner' ? ' (owner paid)' : ' (co-host paid)'), -e.cents]; }))
+    .concat([['Owner net', T.ownerNet], [T.due >= 0 ? 'Owner pays co-host' : 'Co-host pays owner', Math.abs(T.due)]])
+    .forEach(function(r){ out.push([MONTH, r[0], n(r[1])].map(q).join(',')); });
+  var blob = new Blob([out.join('\r\n') + '\r\n'], {type: 'text/csv'}), a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'statement-' + (p.owner || 'owner').replace(/[^A-Za-z0-9]+/g, '-') + '-' + MONTH + '.csv';
+  document.body.appendChild(a); a.click(); a.remove(); track('csv-export'); used();
+};
+$('ytdBtn').onclick = function(){
+  if(!isPro()) return proGate('Year to date');
+  var p = prof(); if(!ready(p)) return;
+  var year = MONTH.slice(0, 4), months = DATA.months.filter(function(m){ return m.slice(0, 4) === year; });
+  var rows = months.map(function(m){ return {m: m, st: statementFor(p, m)}; }), tot = {gross: 0, fee: 0, earn: 0, exp: 0, own: 0, nights: 0};
+  CUR = rows.length ? rows[0].st.currency : '';
+  var h = '<article class="paper"><header class="ph"><div>' + (S.logo ? '<img class="logo" src="' + esc(S.logo) + '" alt="">' : '') + '<div class="biz">' + esc(S.biz) + '</div><div class="who">Prepared for <b>' + esc(p.owner) + '</b><br>' + esc(p.listings.join(' · ')) + '</div></div><div class="doc"><div class="t">Year to date</div><div class="m">' + year + '</div><div class="who">' + (months.length ? CS.monthName(months[0]) + ' to ' + CS.monthName(months[months.length - 1]) : '') + '</div></div></header>';
+  h += '<section class="sec"><table class="st"><thead><tr><th>Month</th><th>Nights</th><th>Gross</th><th>Earned after fees</th><th>Fees to co-host</th><th>Expenses</th><th>Owner net</th></tr></thead><tbody>';
+  var tinc = 0;
+  rows.forEach(function(r){
+    var T = r.st.T;
+    tot.nights += T.nights; tot.gross += T.gross; tinc += T.ownerIncome; tot.earn += T.cohostEarns; tot.exp += T.expCohost + T.expOwner; tot.own += T.ownerNet;
+    h += '<tr><td>' + CS.monthName(r.m) + '</td><td class="num" data-k="Nights">' + T.nights + '</td><td class="num" data-k="Gross">' + money(T.gross) + '</td><td class="num" data-k="Earned">' + money(T.ownerIncome) + '</td><td class="num" data-k="Fees">' + money(-T.cohostEarns) + '</td><td class="num" data-k="Expenses">' + money(-(T.expCohost + T.expOwner)) + '</td><td class="num" data-k="Owner net">' + money(T.ownerNet) + '</td></tr>';
+  });
+  h += '</tbody><tfoot><tr><td>' + year + '</td><td class="num" data-k="Nights">' + tot.nights + '</td><td class="num" data-k="Gross">' + money(tot.gross) + '</td><td class="num" data-k="Earned">' + money(tinc) + '</td><td class="num" data-k="Fees">' + money(-tot.earn) + '</td><td class="num" data-k="Expenses">' + money(-tot.exp) + '</td><td class="num" data-k="Owner net">' + money(tot.own) + '</td></tr></tfoot></table></section>';
+  h += '<div class="pnotes"><p>Covers the months in the loaded file only. "Earned after fees" is gross less platform fees, plus reimbursements, less penalties and withheld tax; owner net = earned − fees to co-host − expenses. Expenses are the ones entered for each month.' + (p.flow !== 'split' && p.period !== 'paid' ? ' Bookings are counted by when guests stayed; Airbnb\'s tax form (1099-K) counts by payout date, so the two can differ around year end. Choose "Airbnb\'s date" under More terms to match it.' : '') + '</p></div></article>';
+  track('ytd'); used(); printPapers(h, 'Year to date ' + p.owner + ' ' + year);
+};
+$('allBtn').onclick = function(){
+  if(!isPro()) return proGate('Printing every owner at once');
+  if(!DATA) return say('Load the CSV first.');
+  var ps = S.profiles.filter(function(p){ return p.listings.length; });
+  if(!ps.length) return say('Tick each owner\'s listings first.');
+  var dup = allListings().filter(function(l){ return ownerOf(l).length > 1; });
+  if(dup.length) return say(dup.join(', ') + ' is ticked for two owners. Untick it on one of them first.');
+  var noname = ps.filter(function(p){ return !p.owner.trim(); });
+  if(noname.length || !S.biz.trim()) return say('Every owner needs a name, and you need a business name (step 2).');
+  track('print-all'); used();
+  printPapers(ps.map(function(p){ return paperHTML(p, statementFor(p, MONTH), {}); }).join(''), 'Owner statements ' + CS.monthName(MONTH));
+};
+
+/* ---------- inputs ---------- */
+$('pick').onclick = function(){ $('file').click(); };
+$('heroLoad').onclick = function(){ $('s1').scrollIntoView({behavior: 'smooth'}); $('file').click(); };
+$('heroSample').onclick = function(){
+  load(sampleCSV(), true);
+  if(window.innerWidth < 980) $('paperWrap').scrollIntoView({behavior: 'smooth'});
+};
+$('file').onchange = function(){ readFile(this.files[0]); this.value = ''; };
+var dz = $('drop');
+['dragenter', 'dragover'].forEach(function(t){ dz.addEventListener(t, function(e){ e.preventDefault(); dz.classList.add('over'); }); });
+['dragleave', 'drop'].forEach(function(t){ dz.addEventListener(t, function(e){ e.preventDefault(); dz.classList.remove('over'); }); });
+dz.addEventListener('drop', function(e){ var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; readFile(f); });
+$('pasteGo').onclick = function(){ var t = $('paste').value; if(t.trim()) load(t, false); };
+$('prof').onchange = function(){ S.cur = this.value; save(); MONTH = DATA && DATA.months.indexOf(MONTH) >= 0 ? MONTH : pickMonth(); renderAll(); };
+$('profNew').onclick = function(){
+  if(S.profiles.length >= 1 && !isPro() && !DEMO) return proGate('More than one owner');
+  var p = newProfile(), c = prof(); ['pct', 'base', 'cleanInBase'].forEach(function(k){ p[k] = c[k]; });
+  S.profiles.push(p); S.cur = p.id; save(); renderAll(); $('owner').focus();
+};
+$('profDel').onclick = function(){
+  var p = prof(); if(S.profiles.length < 2) return;
+  if(!confirm('Remove ' + (p.owner || 'this owner') + ' and their terms and expenses?')) return;
+  S.profiles = S.profiles.filter(function(x){ return x.id !== p.id; }); S.cur = S.profiles[0].id; save(); renderAll();
+};
+$('owner').oninput = function(){ prof().owner = this.value.slice(0, 80); save(); renderPaper(); var o = $('prof').options[$('prof').selectedIndex]; if(o) o.textContent = this.value || 'Owner'; };
+$('biz').oninput = function(){ S.biz = this.value.slice(0, 80); save(); renderPaper(); };
+$('pct').oninput = function(){ var v = parseFloat(this.value); prof().pct = isNaN(v) ? 0 : Math.max(0, Math.min(100, v)); save(); trackOnce('tool-start'); renderPaper(); };
+$('flat').oninput = function(){ prof().flat = Math.max(0, moneyIn(this.value)); save(); renderPaper(); };
+$('cleanIn').onchange = function(){ prof().cleanInBase = this.checked; save(); renderPaper(); };
+$('resFee').onchange = function(){ prof().resFee = this.checked; save(); renderPaper(); };
+segOn('base', 'base'); segOn('cleanTo', 'cleanTo'); segOn('flow', 'flow'); segOn('period', 'period');
+$('lst').addEventListener('change', function(e){
+  var i = e.target.getAttribute('data-l'); if(i === null) return;
+  var l = allListings()[+i], p = prof(), at = p.listings.indexOf(l);
+  if(e.target.checked && at < 0) p.listings.push(l); else if(!e.target.checked && at >= 0) p.listings.splice(at, 1);
+  save(); renderAll();
+});
+$('month').onchange = function(){ MONTH = this.value; renderAll(); };
+$('paidIn').oninput = function(){ var m = mx(); m.paid = this.value.trim() === '' ? '' : Math.abs(moneyIn(this.value)); save(); renderPaper(); };
+function listOn(boxId, field, toCents){
+  $(boxId).addEventListener('input', function(e){
+    var row = e.target.closest('[data-i]'); if(!row) return; var it = mx()[field][+row.getAttribute('data-i')]; if(!it) return;
+    var k = e.target.getAttribute('data-k'); if(!k || k === 'x') return;
+    if(k === 'what') it.what = e.target.value.slice(0, 80);
+    else if(k === 'by') it.by = e.target.value;
+    else if(k === 'nights') it.nights = Math.max(0, Math.min(31, parseInt(e.target.value, 10) || 0));
+    else it[toCents[k] || k] = Math.max(0, moneyIn(e.target.value));
+    save(); renderPaper();
+  });
+  $(boxId).addEventListener('change', function(e){ if(e.target.getAttribute('data-k') === 'by'){ var row = e.target.closest('[data-i]'); var it = mx()[field][+row.getAttribute('data-i')]; if(it){ it.by = e.target.value; save(); renderPaper(); } } });
+  $(boxId).addEventListener('click', function(e){
+    if(e.target.getAttribute('data-k') !== 'x') return; var row = e.target.closest('[data-i]');
+    mx()[field].splice(+row.getAttribute('data-i'), 1); save(); e.target.blur(); renderControls(); renderPaper();
+  });
+}
+listOn('exps', 'expenses', {amt: 'cents'});
+listOn('incs', 'income', {});
+$('expAdd').onclick = function(){ if(!DATA) return; mx().expenses.push({what: '', cents: 0, by: 'cohost'}); save(); renderControls(); var ins = $('exps').querySelectorAll('input[data-k=what]'); if(ins.length) ins[ins.length - 1].focus(); };
+$('incAdd').onclick = function(){
+  if(!DATA) return;
+  if(!isPro() && !DEMO) return proGate('Bookings from Vrbo, Booking.com or direct');
+  mx().income.push({what: '', cents: 0, fee: 0, clean: 0, nights: 0, by: 'owner'}); save(); renderControls();
+  var ins = $('incs').querySelectorAll('input[data-k=what]'); if(ins.length) ins[ins.length - 1].focus();
+};
+document.addEventListener('click', function(e){
+  var lo = e.target.getAttribute && e.target.getAttribute('data-lo'), back = e.target.getAttribute && e.target.getAttribute('data-back');
+  if(lo){ mx().exclude[lo] = 1; save(); renderPaper(); }
+  if(back){ delete mx().exclude[back]; save(); renderPaper(); }
+});
+$('bkOut').onclick = function(){
+  if(DEMO) return say('This is the sample. Go back to your data first.');
+  var blob = new Blob([JSON.stringify({app: 'cohost-statement', v: 1, saved: new Date().toISOString(), state: REAL}, null, 1)], {type: 'application/json'}), a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'cohost-statement-settings-' + new Date().toISOString().slice(0, 10) + '.json';
+  document.body.appendChild(a); a.click(); a.remove(); say('Settings downloaded. Load them on any computer.');
+};
+$('bkIn').onclick = function(){ $('bkFile').click(); };
+$('bkFile').onchange = function(){
+  var f = this.files[0]; this.value = ''; if(!f) return;
+  var r = new FileReader(); r.onload = function(){
+    try{ var j = JSON.parse(String(r.result)); if(!j || j.app !== 'cohost-statement' || !j.state) throw 0;
+      if(!confirm('Replace the owners and settings in this browser with the ones in the file?')) return;
+      if(DEMO) leaveDemo();
+      REAL = clean(j.state); S = REAL; save(); MONTH = ''; MONTH = pickMonth(); renderAll(); say('Settings loaded.');
+    }catch(e){ say('That isn\'t a Co-Host Statement settings file.'); }
+  }; r.readAsText(f);
+};
+
+/* ---------- Pro ---------- */
+function buyUrl(){
+  var a = ''; try{ a = (new URLSearchParams(location.search).get('a') || '').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 40); }catch(e){}
+  return a ? CHECKOUT_PLAN + '?a=' + encodeURIComponent(a) : CHECKOUT_HOME;
+}
+function renderPro(){
+  $('buyLink').href = buyUrl();
+  $('proPrice').textContent = PRICE;
+  $('logoWrap').hidden = !isPro();
+  ['csvOut', 'ytdBtn', 'allBtn'].forEach(function(id){ $(id).title = isPro() ? '' : 'Pro'; });
+  if(isPro()){
+    $('proBuy').hidden = true; $('buyLink').hidden = true;
+    $('proState').innerHTML = '<p class="ok">Pro is on in this browser' + (PRO.email ? ' (' + esc(PRO.email) + ')' : '') + '. Thank you.</p><p>On another computer, enter the same email or code.</p>';
+  } else {
+    $('proBuy').hidden = false; $('buyLink').hidden = false;
+    $('proState').innerHTML = /[?&]bought=1/.test(location.search) ? '<p class="ok">Thanks for buying! Enter the email you paid with to unlock.</p>' : '';
+  }
+}
+$('buyLink').addEventListener('click', function(e){
+  // the page is about to leave: send buy-click now instead of through the 700 ms queue
+  if(skip() || !(window.goatcounter && window.goatcounter.count)) return;
+  e.preventDefault(); var href = this.href;
+  names('buy-click').forEach(function(n, i){ setTimeout(function(){ try{ window.goatcounter.count({path: n, title: n, event: true}); }catch(x){} }, i * 260); });
+  setTimeout(function(){ location.href = href; }, 650);
+});
+function sha256hex(s){
+  return crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)).then(function(buf){
+    return Array.prototype.map.call(new Uint8Array(buf), function(b){ return ('0' + b.toString(16)).slice(-2); }).join('');
+  });
+}
+var unlocking = false;
+function unlock(){
+  var v = $('proKey').value.trim(), msg = $('proMsg');
+  if(unlocking) return;
+  if(!v){ msg.innerHTML = '<span class="err">Type the email you paid with, or your gift code.</span>'; return; }
+  if(v.indexOf('@') < 0){
+    if(!window.crypto || !crypto.subtle){ msg.innerHTML = '<span class="err">This browser can\'t check codes. Try another browser.</span>'; return; }
+    sha256hex(v.toUpperCase().replace(/\s+/g, '')).then(function(hx){
+      if(GIFT.indexOf(hx) >= 0){ PRO = {gift: hx.slice(0, 12)}; lsSet(PROKEY, PRO); track('pro-gift'); track('gift-' + hx.slice(0, 8)); msg.textContent = ''; renderAll(); say('Pro unlocked. Enjoy!'); }
+      else msg.innerHTML = '<span class="err">That code didn\'t match. Check the email it came in, or use the email you paid with.</span>';
+    });
+    return;
+  }
+  unlocking = true; msg.textContent = 'Checking…';
+  fetch(VERIFY_URL, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({app: APP_KEY, email: v})})
+    .then(function(r){ if(!r.ok) throw new Error('http ' + r.status); return r.json(); })
+    .then(function(j){
+      unlocking = false;
+      if(j && j.ok && j.valid){ PRO = {email: v.toLowerCase()}; lsSet(PROKEY, PRO); track('pro-unlocked'); msg.textContent = ''; renderAll(); say('Pro unlocked. Thank you!'); }
+      else if(j && j.ok){ track('pro-notfound'); msg.innerHTML = '<span class="err">No purchase found for that email. Use the email you typed at checkout. Just paid? Wait a minute and try again.</span>'; }
+      else throw new Error('bad reply');
+    }).catch(function(){ unlocking = false; msg.innerHTML = '<span class="err">Couldn\'t reach the checker. Check your connection and try again.</span>'; });
+}
+$('proGo').onclick = unlock;
+$('proKey').addEventListener('keydown', function(e){ if(e.key === 'Enter') unlock(); });
+$('logo').onchange = function(){
+  var f = this.files[0]; if(!f) return;
+  if(f.size > 300000){ say('Logo is over 300 KB. Use a smaller image.'); return; }
+  var r = new FileReader(); r.onload = function(){ var v = String(r.result); if(v.indexOf('data:image/') !== 0) return; S.logo = v; save(); renderPaper(); }; r.readAsDataURL(f);
+};
+$('logoX').onclick = function(){ S.logo = ''; save(); renderPaper(); };
+
+/* ---------- start ---------- */
+(function(){
+  var saved = lsGet(CSVKEY, '');
+  if(saved){ var p = CS.parse(saved, S.order); if(p.ok){ DATA = p; MONTH = pickMonth(); } }
+})();
+renderAll();
+try{ var seenPro = false; new IntersectionObserver(function(es){ es.forEach(function(x){ if(x.isIntersecting && !seenPro && !isPro()){ seenPro = true; track('pro-view'); } }); }).observe($('proSec')); }catch(e){}
+if(GC_CODE && !skip()){
+  var gs = document.createElement('script'); gs.async = true; gs.src = '//gc.zgo.at/count.js'; gs.setAttribute('data-goatcounter', 'https://' + GC_CODE + '.goatcounter.com/count');
+  if(SELFTEST){ gs.setAttribute('data-goatcounter-settings', '{"no_onload": true}'); }   // a self-test's page view doesn't count as a visit
+  document.head.appendChild(gs);
+}
+(function(){
+  var q = new URLSearchParams(location.search);
+  var via = (q.get('via') || '').toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 20), af = (q.get('a') || '').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 40);
+  if(via){ try{ if(sessionStorage.getItem('cos.vseen') !== via){ sessionStorage.setItem('cos.vseen', via); track('via-' + via); } }catch(e){ track('via-' + via); } }
+  if(af) track('aff-' + af);
+  if(q.get('bought') === '1' && !isPro()) setTimeout(function(){ $('proSec').scrollIntoView(); $('proKey').focus(); }, 400);
+  if(SELFTEST && q.get('fire') === 'all'){   // live check only: every event once, as '<event>.selftest'
+    ['tool-start', 'csv-loaded', 'csv-error', 'sample-loaded', 'statement-made', 'statement-used', 'print', 'copy-email', 'csv-export', 'ytd', 'print-all',
+     'pro-view', 'pro-limit', 'buy-click', 'pro-unlocked', 'pro-gift', 'pro-notfound'].forEach(function(n){ track(n); });
+  }
+})();
+window.COS = {state: function(){ return S; }, data: function(){ return DATA; }, month: function(){ return MONTH; }, pending: function(){ return QUEUE.length + (SENDING ? 1 : 0); }, sample: sampleCSV, demo: function(){ return DEMO; }};   // for tests
+})();
+
+</script>
+</body>
+</html>
