@@ -136,6 +136,8 @@ input[type=file]{max-width:100%}
 .faq{padding:28px 0 10px;max-width:820px}
 .faq h3{font-size:20px;margin-top:20px}
 .faq p{margin:6px 0}
+.share{margin:18px auto 0;padding:14px 16px;border:1px dashed var(--green);border-radius:9px;max-width:820px}
+.share p{margin:0 0 10px}
 footer{padding:20px 0 40px;font-size:14.5px;color:var(--ink2)}
 #toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:#fff;border-radius:10px;padding:10px 16px;font-weight:600;display:none;z-index:9;max-width:92vw}
 #printArea{display:none}
@@ -354,6 +356,10 @@ footer{padding:20px 0 40px;font-size:14.5px;color:var(--ink2)}
   <h3>Is my data uploaded anywhere?</h3>
   <p>No. The CSV is read inside this page and saved only in this browser. Unlocking Pro checks the email you paid with; nothing else is sent. The page counts visits anonymously.</p>
 </div>
+<section class="wrap share" id="shareSec">
+  <p><b>Know another co-host who still does owner statements by hand?</b> Send them the page. It works the same for them, and their owners' numbers stay on their computer.</p>
+  <button class="btn small ghost" id="bShare">Copy a link to send them</button>
+</section>
 <footer class="wrap">Co-Host Statement · a small tool from <a href="https://samsbench.com/">samsbench.com</a> · not affiliated with Airbnb. Questions or refunds: sam at samsbench dot com.</footer>
 
 <div id="bar" aria-live="polite"><span class="t" id="barT"></span><span class="a" id="barA"></span><a href="#paperWrap">See it</a></div>
@@ -760,24 +766,68 @@ var VERIFY_URL = 'https://app-bizz-api.whop.site/api/verify';
 var CHECKOUT_HOME = 'https://whop.com/checkout/ch_RtnlxMn1MprxlaK/';    // one-time, returns to SITE?bought=1#proSec
 var CHECKOUT_PLAN = 'https://whop.com/checkout/plan_kR05pTeTgH0Ia';    // same price; used with ?a=<affiliate>
 var PRICE = '$49';
-var GIFT = ['fb83e72d5c78e11830ccddf805206d5e93f21a3ab8984fa1419ca2e77fd1b186','74224d24c35f36decc43eb2dd1bfc42633974345d042276fec9914d522dd4712','5eb509d21720f7639a3b3526581b2a2922f3129e9471de5f1b2e026145ece4c5','09920ee721e054627ef43b017ba77eeb71bb898065db234e36f728ee45a20d64','bec6a1634f79420896736baf647d83c6c7354166f7aa58a4cdb9da396feb2cf7','0fca9ffb6e11709f4bb29832ab4412525380f4813dc1658dae0fb7c70ba13fad','f322be975d5c243f729cb35dd2cf0be47b164a371c0fb512ee3a04666a52cd52','e2c1c19c0ef30d39bb90f8489ee2069404ac9c79f495dbad89028247bab5062d','4b7a451bc0a02309715fa12119da88fdf54fd68f67ea9657b4d79babef154d51','d58a6447ee95eb4dc653eb4922f8c71098e6e5a6b0a8f1de354f9b729cbdc92a','d93a8d93c5a2c53b2f5737556a26719711d8891af8c75f041be21a10ca3a4a2d','d8ac513d06ed48b3203a00b86acf01e4d72d8746584057534cd72b52cb7d2659','c3a870cf7866bf4c113522df071c0e9dacead23feddc9c7ee9390a78153beab0','3c38d7f38019e1ca6be2f544c0a330c5dbd37445ca6b91ef344d810747b10f63','6773eff180c4110a6dc5fbb60d6505e7b1dadaf892e9470093b5ff8ddbe2fd20','ac5d5282f19d5d753984e6e9e78821c9db1daa5534b1b38956eee77b7c8796a7','74500796ae833e3a7eff48adc0ad80eba0aedf365ebafa84af6d934f800d9056','59b4d2bb28e710f4d58653fc858000320611305ec872a94506d16cae5d52b546','610f7098e937937d04baf2debdd4aa20cc3ef6f38c7f257031d98cb8ca816388','c0966653f4c12af3d9a8d4ba4e6f699772910bfbc3fcc8446e3fc672098ace96','04f9f19658da096e19f9e930462f4dec5f86e977d9d46bddb3c9f0405fecc842','7354edbd2d9098b0437c9e2f4fbc651db05cb0bf3236592fbe7f92dcd1cb80b0','9f1b47fb02135d86e0c8080adc4e3ed30773cb2cd5d8491c7660a7a88c16a770','fedd83826da208ec00e9ae4cb71163be12bcfdc10cbbcb85842082b8913d42e2','2d26e216d0d1fa1c87b6f3461fcc83128f079c24672456136ecd7cd8936532f4','341d12191808646f2a3cc55a13286a53b497393b83177b101e5bd9f65272b3d7','bcfbaf035455f5185e755c74fabd6021edd27e99d4bf3ed07fa55cde24375c34','f0004ab2a3a8d4f8f70e6f3514a444c9bd9101d3554337f480be288c3033fa0e','2825d860aa9af51f0d26bb331c4f3d707f1dbed305baebeba1cad24f0ecb7778','f399b8413a5bb512547dd97dea85550556072e8419fc70de925018479bbee8cb','51cbb501b6610ed88847783a6ad89f8fc16849067325d9010ee37ad7a2e6a632','afc42cc370bff7c1da4195750394d91ce3d29470873f32cd89ee8c34e2f4f9ee','11878554c5fe3f090723036bfb862012dabd3fe5cea9af22821ee916e8900f88','70626f3d90d06ccdd6c08e4ee046083d970c7d8abda669e8f7a981227c5f4a27','33eb21042f150c5ee33ffc12142a64cf8ce3f02c16cb5f8e23d93fe571d02242','a54c78b9393bd6ec8b54e7348d8ad97fedffbf75fe582a9e1318a4412faaa4d6','3f62abe9323576a5482ee11f3dd60c0c5617dde844eefdffaf24d32237aea71a','bdd78456b2d704b522e370aca8c0a37f72c8e720491c29055927f7adbb47dc68','c10f93a70999cb3086daa885c6eee671be117885f58dfd618076a4b739394c40','3a26d9f36f8347f42faf37da2cb7b15386cca060eec2abcdf7c5169137f38705','257aba2295eccc77c2f92efb481a96469a309efc40e953457015f64b507af548','64e65cd5107920996fd3b32803cb2edd0a0710e03a08c4a8a0cb32e2c49f1ab0','daec335c86c53f475cb0d7188bf1725b2bc776e5d63dd43d81bb2fb04d3a5a6d','caa681662d83e841fb75220a8dcaf80414387259b36edfef4617abc26003445f','45ff09f84c40ff04e3a1509eb277e7d361648e846fbd57403b0739e6981b40da','e644ae43a484a6bb41110840ea6d3ed08c8519748c260c0567d99c6d3e5f24a1','e65401e190a38d0130790b937e70b2aadaf317dbe1b8ba6b45bce7eac9ff381d','3e4430475a967e538dbd3fb8a2f456ac80f4ad8506423f983624a05f5609366a','cc6f21153793dfe66bde6725e026f8c90192d070e368157a5dccd52cde2101e5','e0f17a94a75223d201b2ec06ff3354bcfc9531beeb6749a4832dd3a8bccb9b40','5b48ad356b61eed7f9d72042318bc0120b8fd028c761f986db81386c44809162','543471a61e3b12817f9e73c96ee14e91fa71f750565685621a99e606c06317e8','1fb4bafb8136bbcff7fde6e07cbbb0741405927e1e891ad85be0bcfc2f018b1b','6a93d6a9c22a9bd9e0ad72e0cf81c2a00e07f5ff3e24cee116314c8a10f56349','61999f54373714fae467d229a3ae4a49e0901fd46f5ff8de7904c185d6d530c8','003f82f786bc09b6cba2c4c903ef8ae0daf129d0e6b4715180ed7ae6daa1d7a5','6d21fa96623a050668712ae56bf98b9f5c5e2204fabe307260502e1f168cdd86','d684aa7c8daeeaffdeb02a5da8c645e679b7393c90adb26fa1b322496ab8d671','5e3db1e55f0400d536d31a6534057d00a5d5b4520475f481aae951b4039e21e4','7603f7e783a87b7e55d413bfb85050e1cba2d4c08c5b989867c2596c09532e51','0068d6a46bd82e326749dffb0fce2a4f7ce76b91c1f79c6756c0f5fbb2cfebcb','3fb8802d18a9814dcbac570da8fd987a0b6853414504ae649187b959276fb7ba','5573748f447ba3b41201be819eaf2737f3b544ec7700e9359bfe0c01b17c4342','36c4e9359827346c37b32663517c8d1424f8db22c286f683b6a8065718faaa21','63182898462ccaa63c002fa42c73bb208e7a12aa17bf8c1c7169c03e54838fdd','3ddd435f4a5d3abe657a576ae67316ae59e7619c20482ee62e219b5ea3859a6f','e7942c1f30536e09f54970c891fca2f5fa68ab1af860e947689c8d175d2ff127','398e370bf378c915a2afae07a6a16b2ba3132063380f5a03767d4f53f4e980f1','71c4161e23843250d6df6983c64f26bf2376c48a8cbf36f963e1cfe04fe616f7','35d4b273220660105d9341a5296d3ee018939c828dfafc6c9c462eb6d0cd7527','5198650439df9d65e5536cfb908e6335cd014a9346a903bfe1d237d44bf66039','c94e69e853b0414e08891e04553119a0233c996719725305f082f6112a672728','d968e09cd18d4116ef398ee0ebef5093a921b33b34d49110bd72018e6e818de4','59b42596108ef2cd9d5fe91408299f4cfe5b29c4d182e75f0aea932a86a29c03','b58106fff4671ef7a3080ac3b2a463f2a52a86e7b1e524dd91bf8b22dfb2b5f5','f70ec65a73ff5a295bce108fe3720d4f676cc00d64f16080fc720a8b4c9f63ae','3f85c05039ce1618faf9660ec4a7e450ff9096b9999622388340cc15ebe45136','d574d7de91a2856568f2935a17692368500de6c66f915708ae24f760c004bb8d','34d02b41f423c46651237c46e723f8200f8e5e36e627150425e4f86b2b151f5b','69bce223dc6b4e97516592edff5fe646b3969df2b3530486b8b2d593e7b21df2','dc07c3eb161a12238437168c16a860d465db4eefd7aaabdb647a29eb61036834','d8c9b30bda93e6af01e24c33102ca22062d945d8bd0a26c90df18ca732ff1b4d','cd6663f60d4dee90c0e625eb9905f0ff75be890c8cdc2f388a4ab8ff89a36d30','39ee273e747836f4646489cce705817b33e38bbb577f97a8cbaba34c1234cbd2','cedad4dc9c417ce6a77b16f871a4c3285231b978b7ec4d54b93e8e5f6df34edf','d43c050f5ba64f014293abac314b655758b17ccc0e68aa92f8945beb0b39d527','24c3b2961f259c72add1ea84fc99edd8f0066b3ca13558ca6821008257d4530e'];                      // SHA-256 of gift codes handed out in letters (outreach/gift_codes.json)
+var GIFT = ['38c4258da6e2e6de0554536e02e0b0baad93cedc32b216f0d0fc6a1d62251237','36c4e9359827346c37b32663517c8d1424f8db22c286f683b6a8065718faaa21','63182898462ccaa63c002fa42c73bb208e7a12aa17bf8c1c7169c03e54838fdd','3ddd435f4a5d3abe657a576ae67316ae59e7619c20482ee62e219b5ea3859a6f','e2f5b9d8c53d16371861d5fe6a33b4ccc5d325467266fdd7956c2157798f9c9a','afdee4747d1399b69df63008f94c83cc34f8c3a7b4456e402d662f7b891b0722','eac173d4cd0b890670f7fb1f74f92a498c23b93adc9d2a75607a9bc9bb2ebf75','dcb215cb242b323d626ce3cf46f319fe5339abbce2cfbb387830b6e4910715eb','56d989ccdaeb2267a7a7b99d63862396437e7eccc664a63b9eacc0f5162dafcd','147d467d539fd4b1d68500159d0d5a556a312933c81fc751c452f3cce6049a58','d8c9b30bda93e6af01e24c33102ca22062d945d8bd0a26c90df18ca732ff1b4d','cd6663f60d4dee90c0e625eb9905f0ff75be890c8cdc2f388a4ab8ff89a36d30','39ee273e747836f4646489cce705817b33e38bbb577f97a8cbaba34c1234cbd2','cedad4dc9c417ce6a77b16f871a4c3285231b978b7ec4d54b93e8e5f6df34edf','d43c050f5ba64f014293abac314b655758b17ccc0e68aa92f8945beb0b39d527','24c3b2961f259c72add1ea84fc99edd8f0066b3ca13558ca6821008257d4530e','fd6b1717f149d28f3a5af8504fbadffb42b4079b66b1f9303a4cc3faa6afd419','2ada36831411f5e37c954dbf1eaffa711add2e4233c1e55f21e90ee5dcaa9544','f9b2617c0733ebdc341df5f9801e37ee762a1c5e0bf5f3c1402dab674e3ec0e8','5a67f1efea4430ab97400e59d9fd42ebcda21628a78783976b266548168382d8','c8fe961a8bc363734b12eb9e61311ca1ea7ce7ec1d7353122555c8439b9c14d3','85873d4a7fdf124f9808b67f474c5c6fe1258a4ac7430f96b946990e960ed418','abab79709bb1f390b82934e1eed7cd333a2fadfd2b036f9c25ba9be327939ca8','d15f30b61c1c712a2962384f44005ddfa1f68a94f95d7159b4c8bc1efa616d20','70faed371dae13ae1a0ae7b56098ddacd2b686ca0584733d18f0cde9d2c5c082','cf247f94b2461a037aa1708ca2ed882d3702863e504ddbc1ac217783760b3262','aeab468f09150bea36f75a219944bfeb36c6dc72c45e6a10734ab06f7511f578','a7fbb9ce4efea4388910e9e80b2ce5f6aec4197bc47bc7f6151828e8c711862a','b4b5cfd06374be8d7c5cbdbd8c7efcb4ff082eb1124f110bed27e7f1e3534d02','503d4296dafc64f7d296a5e782a0d12d3e7344e0113ebb53a4818cb040affab9','6a7e90fc36e79e8a2a1680bf2e6584379e455af0b25cb4d253f6f0f3e8d3263c','337bb04fbb1a46c5fba2449c95f7342baf3d6893be26df37c9ee6183952bcaa0','8a802f98d3f70e13c4502c63c09fba7149cc3604bd5cf52d1b93f09dc9883cca','3bf00fc8f649ee8c4fd39665f5a871d9152083fb32bbe1f1ca82bedc1cd504cb','b34d4da47e6a9853a431ff092dbcb938d79a58b57dd438fdab519ae3ea8c4234','a23dc46299967b9a6ccdfb9682646ee1538ebdb173f7a924748d308d909ccfa2','1ee100772b8c5b05b124ff7c69a68b5938175202f5944e7a7f3c5e80188b5ab9','dee6072a1c476422fae28ed76d6a57eb109754ea2689df7cd2361184e7dfce2b','492a968598506225bba8ac85573d4bc7d1ff321544caa279db69568adffec30f','5b8e24851a225e6e4925377799b31f1965f3e3a97ac962c03065488c2dcec46c','fb83e72d5c78e11830ccddf805206d5e93f21a3ab8984fa1419ca2e77fd1b186','74224d24c35f36decc43eb2dd1bfc42633974345d042276fec9914d522dd4712','5eb509d21720f7639a3b3526581b2a2922f3129e9471de5f1b2e026145ece4c5','09920ee721e054627ef43b017ba77eeb71bb898065db234e36f728ee45a20d64','bec6a1634f79420896736baf647d83c6c7354166f7aa58a4cdb9da396feb2cf7','0fca9ffb6e11709f4bb29832ab4412525380f4813dc1658dae0fb7c70ba13fad','f322be975d5c243f729cb35dd2cf0be47b164a371c0fb512ee3a04666a52cd52','e2c1c19c0ef30d39bb90f8489ee2069404ac9c79f495dbad89028247bab5062d','4b7a451bc0a02309715fa12119da88fdf54fd68f67ea9657b4d79babef154d51','d58a6447ee95eb4dc653eb4922f8c71098e6e5a6b0a8f1de354f9b729cbdc92a','d93a8d93c5a2c53b2f5737556a26719711d8891af8c75f041be21a10ca3a4a2d','d8ac513d06ed48b3203a00b86acf01e4d72d8746584057534cd72b52cb7d2659','c3a870cf7866bf4c113522df071c0e9dacead23feddc9c7ee9390a78153beab0','3c38d7f38019e1ca6be2f544c0a330c5dbd37445ca6b91ef344d810747b10f63','6773eff180c4110a6dc5fbb60d6505e7b1dadaf892e9470093b5ff8ddbe2fd20','ac5d5282f19d5d753984e6e9e78821c9db1daa5534b1b38956eee77b7c8796a7','74500796ae833e3a7eff48adc0ad80eba0aedf365ebafa84af6d934f800d9056','59b4d2bb28e710f4d58653fc858000320611305ec872a94506d16cae5d52b546','610f7098e937937d04baf2debdd4aa20cc3ef6f38c7f257031d98cb8ca816388','c0966653f4c12af3d9a8d4ba4e6f699772910bfbc3fcc8446e3fc672098ace96','04f9f19658da096e19f9e930462f4dec5f86e977d9d46bddb3c9f0405fecc842','7354edbd2d9098b0437c9e2f4fbc651db05cb0bf3236592fbe7f92dcd1cb80b0','9f1b47fb02135d86e0c8080adc4e3ed30773cb2cd5d8491c7660a7a88c16a770','fedd83826da208ec00e9ae4cb71163be12bcfdc10cbbcb85842082b8913d42e2','2d26e216d0d1fa1c87b6f3461fcc83128f079c24672456136ecd7cd8936532f4','341d12191808646f2a3cc55a13286a53b497393b83177b101e5bd9f65272b3d7','bcfbaf035455f5185e755c74fabd6021edd27e99d4bf3ed07fa55cde24375c34','f0004ab2a3a8d4f8f70e6f3514a444c9bd9101d3554337f480be288c3033fa0e','2825d860aa9af51f0d26bb331c4f3d707f1dbed305baebeba1cad24f0ecb7778','f399b8413a5bb512547dd97dea85550556072e8419fc70de925018479bbee8cb','51cbb501b6610ed88847783a6ad89f8fc16849067325d9010ee37ad7a2e6a632','afc42cc370bff7c1da4195750394d91ce3d29470873f32cd89ee8c34e2f4f9ee','11878554c5fe3f090723036bfb862012dabd3fe5cea9af22821ee916e8900f88','70626f3d90d06ccdd6c08e4ee046083d970c7d8abda669e8f7a981227c5f4a27','33eb21042f150c5ee33ffc12142a64cf8ce3f02c16cb5f8e23d93fe571d02242','a54c78b9393bd6ec8b54e7348d8ad97fedffbf75fe582a9e1318a4412faaa4d6','3f62abe9323576a5482ee11f3dd60c0c5617dde844eefdffaf24d32237aea71a','bdd78456b2d704b522e370aca8c0a37f72c8e720491c29055927f7adbb47dc68','c10f93a70999cb3086daa885c6eee671be117885f58dfd618076a4b739394c40','3a26d9f36f8347f42faf37da2cb7b15386cca060eec2abcdf7c5169137f38705','257aba2295eccc77c2f92efb481a96469a309efc40e953457015f64b507af548','64e65cd5107920996fd3b32803cb2edd0a0710e03a08c4a8a0cb32e2c49f1ab0','daec335c86c53f475cb0d7188bf1725b2bc776e5d63dd43d81bb2fb04d3a5a6d','caa681662d83e841fb75220a8dcaf80414387259b36edfef4617abc26003445f','45ff09f84c40ff04e3a1509eb277e7d361648e846fbd57403b0739e6981b40da','e644ae43a484a6bb41110840ea6d3ed08c8519748c260c0567d99c6d3e5f24a1','e65401e190a38d0130790b937e70b2aadaf317dbe1b8ba6b45bce7eac9ff381d','3e4430475a967e538dbd3fb8a2f456ac80f4ad8506423f983624a05f5609366a','cc6f21153793dfe66bde6725e026f8c90192d070e368157a5dccd52cde2101e5','e0f17a94a75223d201b2ec06ff3354bcfc9531beeb6749a4832dd3a8bccb9b40','5b48ad356b61eed7f9d72042318bc0120b8fd028c761f986db81386c44809162','543471a61e3b12817f9e73c96ee14e91fa71f750565685621a99e606c06317e8','1fb4bafb8136bbcff7fde6e07cbbb0741405927e1e891ad85be0bcfc2f018b1b','6a93d6a9c22a9bd9e0ad72e0cf81c2a00e07f5ff3e24cee116314c8a10f56349','61999f54373714fae467d229a3ae4a49e0901fd46f5ff8de7904c185d6d530c8','003f82f786bc09b6cba2c4c903ef8ae0daf129d0e6b4715180ed7ae6daa1d7a5','6d21fa96623a050668712ae56bf98b9f5c5e2204fabe307260502e1f168cdd86','d684aa7c8daeeaffdeb02a5da8c645e679b7393c90adb26fa1b322496ab8d671','5e3db1e55f0400d536d31a6534057d00a5d5b4520475f481aae951b4039e21e4','7603f7e783a87b7e55d413bfb85050e1cba2d4c08c5b989867c2596c09532e51','0068d6a46bd82e326749dffb0fce2a4f7ce76b91c1f79c6756c0f5fbb2cfebcb','3fb8802d18a9814dcbac570da8fd987a0b6853414504ae649187b959276fb7ba','5573748f447ba3b41201be819eaf2737f3b544ec7700e9359bfe0c01b17c4342','e7942c1f30536e09f54970c891fca2f5fa68ab1af860e947689c8d175d2ff127','398e370bf378c915a2afae07a6a16b2ba3132063380f5a03767d4f53f4e980f1','71c4161e23843250d6df6983c64f26bf2376c48a8cbf36f963e1cfe04fe616f7','35d4b273220660105d9341a5296d3ee018939c828dfafc6c9c462eb6d0cd7527','5198650439df9d65e5536cfb908e6335cd014a9346a903bfe1d237d44bf66039','c94e69e853b0414e08891e04553119a0233c996719725305f082f6112a672728','d968e09cd18d4116ef398ee0ebef5093a921b33b34d49110bd72018e6e818de4','59b42596108ef2cd9d5fe91408299f4cfe5b29c4d182e75f0aea932a86a29c03','b58106fff4671ef7a3080ac3b2a463f2a52a86e7b1e524dd91bf8b22dfb2b5f5','f70ec65a73ff5a295bce108fe3720d4f676cc00d64f16080fc720a8b4c9f63ae','3f85c05039ce1618faf9660ec4a7e450ff9096b9999622388340cc15ebe45136','d574d7de91a2856568f2935a17692368500de6c66f915708ae24f760c004bb8d','34d02b41f423c46651237c46e723f8200f8e5e36e627150425e4f86b2b151f5b','69bce223dc6b4e97516592edff5fe646b3969df2b3530486b8b2d593e7b21df2','dc07c3eb161a12238437168c16a860d465db4eefd7aaabdb647a29eb61036834'];                      // SHA-256 of gift codes handed out in letters (outreach/gift_codes.json)
 var KEY = 'cos.v1', CSVKEY = 'cos.csv', PROKEY = 'cos.pro';
 
 /* ---------- measurement (GoatCounter). Same pattern as Handbell Chart / Booking Check: ?via follows the visitor down the funnel,
    one hit every 700 ms (GoatCounter drops more than ~4/s per visitor), first one 1.5 s after count.js's own pageview.
    Self-tests (?via=selftest...) send only '<event>.selftest' (marketing/TESTS.md). ---------- */
 var GC_CODE = 'cohoststatement';
-var SRC = (function(){ try{
-  var q = new URLSearchParams(location.search), v = (q.get('via') || '').toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 20) || (q.get('a') ? 'aff' : '');
-  if(v){ sessionStorage.setItem('cos.src', v); return v; }
-  return sessionStorage.getItem('cos.src') || '';
-}catch(e){ return ''; } })();
+/* Letters (FACTORY 7, 11-25; bond-hours / fuzzy-grid scheme): each letter has its own code, csaNNN for people with an audience
+   (creators, associations), cslNNN for co-host companies (the control group). The letter and the page's share button hand out
+   <code>-s to pass on.
+   - via-<code> fires once per browser that lands on the letter's own link (ledger: "letters with 3+ visits on their link").
+   - via-<code>-s (ledger: "letters with share visits") fires only when a browser that came in on <code>-s starts using the tool,
+     and never in a browser that has been on <code> itself (the recipient trying their own share link).
+   - Funnel events carry the group, not the code: .csa / .csl (the recipient) and .css (someone they passed it to).
+   The source is kept 60 days, so a co-host who comes back at month end with their CSV is still counted. */
+var VIA = '', SHARE_PENDING = '';
+var LETTER_RE = /^cs[al]\d{3}(-s)?$/;
+function viaGroup(v){ var m = /^cs([al])\d{3}(-s)?$/.exec(v); return m ? (m[2] ? 'css' : 'cs' + m[1]) : (/^cs[al]\d/.test(v) ? 'csx' : v); }
+function listGet(k){ try{ var a = JSON.parse(localStorage.getItem(k) || '[]'); return Array.isArray(a) ? a.filter(function(x){ return typeof x === 'string'; }) : []; }catch(e){ return []; } }
+function listAdd(k, v){ var a = listGet(k); if(a.indexOf(v) < 0){ a.push(v); try{ localStorage.setItem(k, JSON.stringify(a.slice(-40))); }catch(e){} } }
+function sharesDone(){ return listGet('cos.shares'); }
+function viasSeen(){ try{ var a = JSON.parse(localStorage.getItem('cos.vias') || '[]'); return Array.isArray(a) ? a.filter(function(x){ return typeof x === 'string'; }) : []; }catch(e){ return []; } }
+var SRC = (function(){
+  var q, v = '';
+  try{ q = new URLSearchParams(location.search); v = (q.get('via') || '').toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 20); }catch(e){}
+  VIA = v;
+  var m = LETTER_RE.exec(v), seen = viasSeen();
+  if(m && !m[1]){
+    if(seen.indexOf(v) < 0){ seen.push(v); try{ localStorage.setItem('cos.vias', JSON.stringify(seen.slice(-20))); }catch(e){} }   // marks the recipient's own browser at once
+    if(listGet('cos.viaSent').indexOf(v) >= 0) VIA = '';             // this browser's visit on this link already reached GoatCounter
+  }
+  if(m && m[1]){
+    VIA = '';                                                        // a pass-on visit counts only once the tool is used
+    if(seen.indexOf(v.slice(0, -2)) >= 0) v = v.slice(0, -2);        // the recipient's own share link: still their own visit
+    else if(sharesDone().indexOf(v) < 0){ SHARE_PENDING = v; try{ localStorage.setItem('cos.sharePending', v); }catch(e){} }
+  }
+  try{
+    if(!v && q && q.get('a')) v = 'aff';
+    if(v){ localStorage.setItem('cos.src', JSON.stringify({v: v, t: Date.now()})); return viaGroup(v); }
+    var o = JSON.parse(localStorage.getItem('cos.src') || 'null');
+    return (o && typeof o.v === 'string' && Date.now() - o.t < 60 * 864e5) ? viaGroup(o.v) : '';
+  }catch(e){ return viaGroup(v); }
+})();
+function shareUse(){   // the tool was used: a pending pass-on visit becomes via-<code>-s, once per browser
+  var p = SHARE_PENDING; try{ p = p || localStorage.getItem('cos.sharePending') || ''; }catch(e){}
+  if(!/^cs[al]\d{3}-s$/.test(p)) return;
+  SHARE_PENDING = '';
+  if(viasSeen().indexOf(p.slice(0, -2)) >= 0) return;               // the recipient's own browser
+  if(sharesDone().indexOf(p) >= 0) return;
+  track('via-' + p);                                                 // cos.shares is written when it reaches GoatCounter (drain)
+}
+function shareLink(){
+  var seen = viasSeen(), own = seen.length ? seen[seen.length - 1] : '';
+  return SITE + '?via=' + (/^cs[al]\d{3}$/.test(own) ? own + '-s' : 'share');
+}
 var SELFTEST = SRC.indexOf('selftest') === 0;
+try{ if(SELFTEST) localStorage.setItem('cos.selftest', '1'); else if(localStorage.getItem('cos.selftest') === '1') SELFTEST = true; }catch(e){}   // our own test browser never adds real counts later
 var FUNNEL_EV = {'tool-start':1, 'csv-loaded':1, 'csv-error':1, 'sample-loaded':1, 'statement-made':1, 'statement-used':1, 'print':1, 'copy-email':1,
-                 'csv-export':1, 'ytd':1, 'print-all':1, 'pro-view':1, 'pro-limit':1, 'buy-click':1, 'pro-unlocked':1, 'pro-gift':1};
-var ONCE = {}, QUEUE = [], SENDING = false, GC_READY = 0;
+                 'csv-export':1, 'ytd':1, 'print-all':1, 'pro-view':1, 'pro-limit':1, 'buy-click':1, 'pro-unlocked':1, 'pro-gift':1, 'share-copy':1};
+var ONCE = {}, QUEUE = [], SENT = [], SENDING = false, GC_READY = 0;
 function skip(){ try{ return localStorage.getItem('skipgc') === 't'; }catch(e){ return false; } }
-function names(name){ return SELFTEST ? [name + '.' + SRC] : (SRC && FUNNEL_EV[name] ? [name + '.' + SRC, name] : [name]); }
+function names(name){ return SELFTEST ? [name + '.' + (SRC.indexOf('selftest') === 0 ? SRC : 'selftest')] : (SRC && FUNNEL_EV[name] ? [name + '.' + SRC, name] : [name]); }
 function track(name){
   try{ if(skip()) return; names(name).forEach(function(n){ QUEUE.push(n); }); drain(); }catch(e){}
 }
@@ -787,10 +837,12 @@ function drain(){
   if(!GC_READY){ GC_READY = Date.now(); }
   if(Date.now() - GC_READY < 1500){ SENDING = true; setTimeout(function(){ SENDING = false; drain(); }, 1500 - (Date.now() - GC_READY)); return; }
   var n = QUEUE.shift(); SENDING = true;
+  SENT.push(n);
+  var mv = /^via-(cs[al]\d{3})(-s)?$/.exec(n); if(mv) listAdd(mv[2] ? 'cos.shares' : 'cos.viaSent', mv[1] + (mv[2] || ''));
   try{ window.goatcounter.count({path: n, title: n, event: true}); }catch(e){}
   setTimeout(function(){ SENDING = false; drain(); }, 700);
 }
-function trackOnce(name){ if(ONCE[name]) return; ONCE[name] = 1; track(name); }
+function trackOnce(name){ if(name === 'statement-made' && !SELFTEST) shareUse(); if(ONCE[name]) return; ONCE[name] = 1; track(name); }
 
 /* ---------- state ---------- */
 function lsGet(k, d){ try{ var t = localStorage.getItem(k); return t ? JSON.parse(t) : d; }catch(e){ return d; } }
@@ -1395,15 +1447,23 @@ if(GC_CODE && !skip()){
 (function(){
   var q = new URLSearchParams(location.search);
   var via = (q.get('via') || '').toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 20), af = (q.get('a') || '').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 40);
-  if(via){ try{ if(sessionStorage.getItem('cos.vseen') !== via){ sessionStorage.setItem('cos.vseen', via); track('via-' + via); } }catch(e){ track('via-' + via); } }
+  if(LETTER_RE.test(via)){ if(VIA) track('via-' + VIA); }   // letter codes: once per browser (see SRC above)
+  else if(via){ try{ if(sessionStorage.getItem('cos.vseen') !== via){ sessionStorage.setItem('cos.vseen', via); track('via-' + via); } }catch(e){ track('via-' + via); } }
   if(af) track('aff-' + af);
   if(q.get('bought') === '1' && !isPro()) setTimeout(function(){ $('proSec').scrollIntoView(); $('proKey').focus(); }, 400);
   if(SELFTEST && q.get('fire') === 'all'){   // live check only: every event once, as '<event>.selftest'
     ['tool-start', 'csv-loaded', 'csv-error', 'sample-loaded', 'statement-made', 'statement-used', 'print', 'copy-email', 'csv-export', 'ytd', 'print-all',
-     'pro-view', 'pro-limit', 'buy-click', 'pro-unlocked', 'pro-gift', 'pro-notfound'].forEach(function(n){ track(n); });
+     'pro-view', 'pro-limit', 'buy-click', 'pro-unlocked', 'pro-gift', 'pro-notfound', 'share-copy'].forEach(function(n){ track(n); });
   }
 })();
-window.COS = {state: function(){ return S; }, data: function(){ return DATA; }, month: function(){ return MONTH; }, pending: function(){ return QUEUE.length + (SENDING ? 1 : 0); }, sample: sampleCSV, demo: function(){ return DEMO; }};   // for tests
+$('bShare').onclick = function(){
+  var link = shareLink();
+  function done(){ say('Link copied. Paste it into an email or message.'); }
+  if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(done, function(){ fallback(link); done(); });
+  else { fallback(link); done(); }
+  var o = lsGet('cos.once', {}); if(!o['share-copy']){ o['share-copy'] = Date.now(); lsSet('cos.once', o); track('share-copy'); }
+};
+window.COS = {state: function(){ return S; }, data: function(){ return DATA; }, month: function(){ return MONTH; }, pending: function(){ return QUEUE.length + (SENDING ? 1 : 0); }, queue: function(){ return QUEUE.slice(); }, sent: function(){ return SENT.slice(); }, src: function(){ return SRC; }, shareLink: shareLink, sample: sampleCSV, demo: function(){ return DEMO; }};   // for tests
 })();
 
 </script>
